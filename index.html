@@ -212,7 +212,16 @@ const PROFILES = {
 };
 // ============================================================
 let PROFILE = 'kyoo';
-const rowsNow = () => PROFILES[PROFILE] || [];
+// 이어보기·TOP 5가 없는 프로필은 그 프로필 영상으로 자동으로 채워줌
+const autoRows = rows => {
+  if(rows.some(r=>r.top)) return rows;
+  const pool = []; const max = Math.max(0, ...rows.map(r=>r.items.length));
+  for(let i=0;i<max;i++) rows.forEach(r=>{ if(r.items[i]) pool.push(r.items[i]); });
+  const cont = pool.slice(0,4), top = [HERO, ...pool.slice(4,8)];
+  if(top.length < 5) top.push(...pool.filter(v=>!top.includes(v)).slice(0, 5-top.length));
+  return [{name:'이어서 시청하기', items:cont, progress:[62,30,80,45]}, {name:'오늘의 TOP 5', top:true, items:top}, ...rows];
+};
+const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
 const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
 const find = id => ALL().find(v=>v.id===id);
 const art = v => `background:${v.thumb?`url('${v.thumb}') center/cover no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
