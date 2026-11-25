@@ -180,17 +180,25 @@ const KYURAL = [1,2,3,4,5].map(i=>file('오늘의 뀨랄 0'+i,'뀨랄 '+i,'어�
 const EDITS = [1,2,3,4,5].map(i=>file('에딧 0'+i,'EDIT '+i,'에딧 설명을 적어주세요.','1분',`videos/edit${i}.mp4`,`thumbs/edit${i}.jpg`));
 const CLIPS = [1,2,3,4,5].map(i=>file('방송 편집 0'+i,'CLIP '+i,'어떤 방송인지 한 줄 설명.','1분',`videos/clip${i}.mp4`,`thumbs/clip${i}.jpg`));
 
+// ── 유튜브: 돌아와요 규형이형
+const BACK = [
+  yt('https://youtu.be/xA8ICWw-g98','육교 뛰어올라가기'),
+  yt('https://youtu.be/-der6q9GYc4','왜 가난하고 그래?'),
+  yt('https://youtu.be/dlCOssDVvdA','다이스뀨스 퀵체인지'),
+  yt('https://youtu.be/3XvltHDgUGE','목숨 건 특수분장'),
+  yt('https://youtu.be/d9I7It62hB0','뷰튜버 본격 데뷔'),
+  yt('https://youtu.be/Z98wU0hFkNA','희노애락 런던'),
+];
+
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
   // 🐈‍⬛ 뀨
   kyoo: [
     {name:'이어서 시청하기', items:[FACE[0],KYURAL[1],EDITS[2],FACE[3]], progress:[62,30,80,45]},
-    {name:'오늘의 TOP 5', top:true, items:[HERO,KYURAL[0],FACE[1],EDITS[0],KYURAL[2]]},
+    {name:'오늘의 TOP 5', top:true, items:[HERO,KYURAL[0],FACE[1],BACK[0],KYURAL[2]]},
     {name:'이규형 얼굴 하이라이트', items:FACE},
     {name:'회원님을 위해 엄선한 오늘의 뀨랄', items:KYURAL},
-    {name:'돌아와요 규형이형', items:[
-      yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04'), yt('','영상 05'),
-    ]},
+    {name:'돌아와요 규형이형', items:BACK},
   ],
   // 🐟 뀨러기
   fan: [
