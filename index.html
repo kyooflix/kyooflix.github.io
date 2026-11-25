@@ -111,6 +111,22 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 #player .empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
 #player .back{position:absolute;top:16px;left:16px;z-index:2;min-height:44px;padding:8px 16px;border-radius:6px;border:0;background:#ffffff22}
 footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
+/* hover preview */
+#pop{position:absolute;z-index:25;background:var(--panel);border-radius:10px;overflow:hidden;box-shadow:0 18px 40px #000c;transform-origin:center;animation:popin .18s ease-out}
+@keyframes popin{from{opacity:0;transform:scale(.88)}}
+#pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px}
+#pop .pv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#pop .pv b{position:relative;font-size:17px;text-shadow:0 1px 8px #000c}
+#pop .pb{padding:12px 14px 14px}
+#pop .ic{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+#pop .ic button{width:38px;height:38px;border-radius:50%;border:1.5px solid #ffffff66;background:transparent;display:grid;place-items:center;font-size:15px;padding:0}
+#pop .ic .pl{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#pop .ic .lk.on{border-color:var(--rose);color:var(--rose)}
+#pop .ic .mo{margin-left:auto}
+#pop .mt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--soft)}
+#pop .mt .ag{border:1px solid #ffffff55;padding:0 5px;border-radius:3px;font-size:12px}
+#pop .ds{margin:8px 0 0;font-size:13px;color:#ddd}
+@media (hover:none){#pop{display:none!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
 @media (max-width:600px){header{gap:14px}.hero{min-height:420px}.arrow{display:none}}
 </style>
@@ -152,6 +168,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 <div class="rows" id="rows"></div>
 <footer>Made by 뀨러기 · 배우 이규형 생일 축하 비공식 팬메이드 페이지</footer>
 
+<div id="pop" class="hidden"></div>
 <div class="overlay hidden" id="overlay" role="dialog" aria-modal="true">
   <div class="sheet" id="sheet"></div>
 </div>
@@ -256,6 +273,7 @@ document.querySelectorAll('.prof').forEach(b=>b.addEventListener('click',()=>{
 document.querySelector('.me').addEventListener('click',()=>{ $('who').style.animation='none'; $('who').classList.remove('hidden'); });
 
 function renderRows(){
+  try{ hidePop(); }catch(e){}
 $('rows').innerHTML = rowsNow().map((r,ri)=>`
   <section class="row ${r.top?'top':''}">
     <h2>${r.name}</h2>
@@ -354,6 +372,50 @@ function closePlayer(){
 }
 $('back').onclick = closePlayer;
 renderHero();
+
+// ── 카드에 마우스 올리면 뜨는 미리보기
+const liked = new Set();
+let popT = null, popFor = null;
+const pop = $('pop');
+function hidePop(){ clearTimeout(popT); popFor=null; pop.classList.add('hidden'); pop.innerHTML=''; }
+function showPop(card){
+  const v = find(card.dataset.id); if(!v) return;
+  const r = card.getBoundingClientRect();
+  const w = Math.min(Math.max(r.width*1.3, 300), innerWidth-24);
+  const left = Math.min(Math.max(r.left + r.width/2 - w/2, 12), innerWidth - w - 12);
+  const top = Math.max(r.top + scrollY - r.height*.3, scrollY + 70);
+  pop.style.cssText = `left:${left}px;top:${top}px;width:${w}px`;
+  pop.innerHTML = `
+    <div class="pv" style="${art(v)}">${v.src?`<video src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
+    <div class="pb">
+      <div class="ic">
+        <button class="pl" data-a="play" aria-label="재생">▶</button>
+        <button class="jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button>
+        <button class="lk ${liked.has(v.id)?'on':''}" data-a="like" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
+        <button class="mo" data-a="more" aria-label="상세 정보">⌄</button>
+      </div>
+      <div class="mt"><span>생일 특집</span><span class="ag">ALL</span>${v.len?`<span>${v.len}</span>`:''}<span>${v.yt?'YouTube':'HD'}</span></div>
+      ${v.desc?`<p class="ds">${v.desc}</p>`:''}
+    </div>`;
+  popFor = v.id; pop.classList.remove('hidden');
+}
+document.addEventListener('mouseover', e=>{
+  if(!matchMedia('(hover:hover)').matches) return;
+  const c = e.target.closest('.card');
+  if(c && c.dataset.id!==popFor){ clearTimeout(popT); popT = setTimeout(()=>showPop(c), 450); }
+  if(!c && !e.target.closest('#pop')) hidePop();
+});
+pop.addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b || !popFor) return;
+  e.stopPropagation();
+  const id = popFor;
+  if(b.dataset.a==='play'){ hidePop(); play(id); }
+  else if(b.dataset.a==='more'){ hidePop(); openSheet(id); }
+  else if(b.dataset.a==='like'){ liked.has(id)?liked.delete(id):liked.add(id); b.classList.toggle('on',liked.has(id)); b.textContent=liked.has(id)?'♥':'♡'; }
+  else if(b.classList.contains('jj')){ jjim.has(id)?jjim.delete(id):jjim.add(id); document.querySelectorAll(`.jj[data-id="${id}"]`).forEach(x=>{x.classList.toggle('on',jjim.has(id)); x.textContent=jjim.has(id)?'✓':'＋';}); }
+});
+addEventListener('scroll', hidePop, {passive:true});
+document.querySelectorAll('.track').forEach(t=>t.addEventListener('scroll', hidePop, {passive:true}));
 }
 </script>
 </body>
