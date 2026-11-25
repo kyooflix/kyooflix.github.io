@@ -88,13 +88,22 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 
 /* detail sheet */
 .overlay{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px;overflow-y:auto}
-.sheet{width:min(760px,100%);background:var(--panel);border-radius:12px;overflow:hidden;animation:pop .25s ease}
+.sheet{width:min(880px,100%);background:var(--panel);border-radius:12px;overflow:hidden;animation:pop .25s ease}
 @keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97)}}
-.sheet .cover{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:24px}
-.sheet .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,var(--panel))}
+.sheet .cover{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:clamp(18px,4vw,40px);overflow:hidden}
+.sheet .cover>.media{position:absolute;inset:0;z-index:0}
+.sheet .cover>.x{position:absolute;top:14px;right:14px;z-index:3}
+.sheet .cover .media video,.sheet .cover .media iframe{width:100%;height:100%;object-fit:cover;border:0;pointer-events:none}
+.sheet .cover .media iframe{transform:scale(1.2)}
+.sheet .cover .row2{display:flex;align-items:center;gap:10px;width:100%}
+.sheet .cover .snd{margin-left:auto;width:44px;height:44px;border-radius:50%;border:1.5px solid #ffffff88;background:#0005;font-size:16px}
+.sheet .two{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:28px}
+.sheet .side p{margin:0 0 10px;font-size:14px}.sheet .side span{color:var(--soft)}
+@media(max-width:600px){.sheet .two{grid-template-columns:minmax(0,1fr);gap:8px}}
+.sheet .cover::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(transparent 45%,var(--panel))}
 .sheet .cover>*{position:relative;z-index:1}
 .sheet h3{letter-spacing:-.02em;font:900 clamp(26px,5vw,40px)/1.1 "Noto Sans KR",sans-serif;margin:0 0 14px}
-.sheet .body{padding:4px 24px 26px}
+.sheet .body{padding:6px clamp(18px,4vw,40px) 30px}
 .meta{display:flex;flex-wrap:wrap;gap:10px;font-size:14px;color:var(--soft);margin-bottom:10px}
 .meta b{color:#7ee0a0}
 .x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:#000a;font-size:20px}
@@ -179,6 +188,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
 function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
+const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1`;
 function yt(url, title){
   const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
   const y = m ? m[1] : '';
@@ -237,6 +247,11 @@ const PROFILES = {
     {name:'슬기로운 도련생활(와)과 비슷한 콘텐츠', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
   ],
 };
+
+// ── 상세 정보 (영상 제목을 그대로 쓰고, 넣고 싶은 항목만 채우면 돼요)
+const INFO = {
+  // '육교 뛰어올라가기': {year:'2024', desc:'설명', cast:'이규형', genre:'브이로그', mood:'웃긴, 귀여운'},
+};
 // ============================================================
 let PROFILE = 'kyoo';
 // 이어보기·TOP 5가 없는 프로필은 그 프로필 영상으로 자동으로 채워줌
@@ -251,6 +266,7 @@ const autoRows = rows => {
 const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
 const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
 const find = id => ALL().find(v=>v.id===id);
+ALL().forEach(v=>Object.assign(v, INFO[v.title]||{}));
 const art = v => `background:${v.thumb?`url('${v.thumb}') center/cover no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
 const $ = id => document.getElementById(id);
 const jjim = new Set();
@@ -327,21 +343,45 @@ $('mute').onclick = ()=>{
 let lastFocus = null;
 function openSheet(id){
   const v = find(id); lastFocus = document.activeElement;
+  const media = v.yt
+    ? `<iframe id="cv" src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`
+    : v.src ? `<video id="cv" src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>` : '';
+  const side = [['출연',v.cast],['장르',v.genre],['특징',v.mood]].filter(x=>x[1]).map(x=>`<p><span>${x[0]}: </span>${x[1]}</p>`).join('');
   $('sheet').innerHTML = `
     <div class="cover" style="${art(v)}">
+      <div class="media">${media}</div>
       <button class="x" id="x" aria-label="닫기">✕</button>
-      <div><h3>${v.title}</h3><div class="acts"><button class="btn play" id="sp">▶ 재생</button><button class="btn more jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button></div></div>
+      <div style="width:100%"><h3>${v.title}</h3>
+        <div class="row2">
+          <button class="btn play" id="sp">▶ 재생</button>
+          <button class="btn more jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button>
+          <button class="btn more" id="lk2" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
+          ${media?`<button class="snd" id="snd" aria-label="소리 켜기">🔇</button>`:''}
+        </div></div>
     </div>
-    <div class="body">
-      <div class="meta"><b>생일 특집</b><span>2026</span><span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">ALL</span>${v.len?`<span>${v.len}</span>`:''}<span>${v.yt?'YouTube':'HD'}</span></div>
-      ${v.desc?`<p>${v.desc}</p>`:''}
-      ${eps(v)}
-    </div>`;
+    <div class="body"><div class="two">
+      <div>
+        <div class="meta"><span>${v.year||'2026'}</span>${v.len?`<span>${v.len}</span>`:''}<span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">${v.yt?'YouTube':'HD'}</span><b>생일 특집</b></div>
+        ${v.desc?`<p>${v.desc}</p>`:''}
+      </div>
+      <div class="side">${side}</div>
+    </div></div>`;
   $('overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
-  $('x').onclick = closeSheet; $('sp').onclick = ()=>play(id); $('x').focus();
+  const hv = $('heroVid'); if(hv) hv.pause();
+  $('x').onclick = closeSheet; $('sp').onclick = ()=>{ stopCover(); play(id); }; $('x').focus();
+  $('lk2').onclick = ()=>{ liked.has(id)?liked.delete(id):liked.add(id); $('lk2').textContent = liked.has(id)?'♥':'♡'; };
+  if($('snd')) $('snd').onclick = ()=>{
+    const c = $('cv'); if(!c) return;
+    let muted;
+    if(c.tagName==='VIDEO'){ c.muted = !c.muted; muted = c.muted; }
+    else { muted = c.src.includes('mute=0'); c.src = ytSrc(v.yt, muted?1:0); }
+    $('snd').textContent = muted?'🔇':'🔊';
+  };
 }
+function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
+  stopCover(); const hv = $('heroVid'); if(hv && $('player').classList.contains('hidden')) hv.play().catch(()=>{});
   $('overlay').classList.add('hidden'); document.body.style.overflow='';
   lastFocus?.focus?.();
 }
@@ -386,7 +426,7 @@ function showPop(card){
   const top = Math.max(r.top + scrollY - r.height*.3, scrollY + 70);
   pop.style.cssText = `left:${left}px;top:${top}px;width:${w}px`;
   pop.innerHTML = `
-    <div class="pv" style="${art(v)}">${v.src?`<video src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
+    <div class="pv" style="${art(v)}">${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.2)"></iframe>`:v.src?`<video src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
     <div class="pb">
       <div class="ic">
         <button class="pl" data-a="play" aria-label="재생">▶</button>
