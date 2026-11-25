@@ -103,7 +103,9 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 
 /* player */
 #player{position:fixed;inset:0;z-index:40;background:#000;display:grid;place-items:center}
-#player video,#player iframe{width:100%;height:100%;object-fit:contain;border:0}
+#pbody{position:absolute;inset:0;display:grid;place-items:center}
+#player video{width:100%;height:100%;object-fit:contain}
+#player iframe{width:min(100%,calc(100vh*16/9));height:auto;aspect-ratio:16/9;border:0}
 #player .ytout{position:absolute;top:16px;right:16px;z-index:2;min-height:44px;display:inline-flex;align-items:center;padding:8px 16px;border-radius:6px;background:#ffffff22;color:var(--ink);text-decoration:none;font-size:14px}
 #player .empty{text-align:center;color:var(--soft);padding:20px}
 #player .empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
@@ -261,7 +263,7 @@ $('rows').innerHTML = rowsNow().map((r,ri)=>`
       <button class="arrow l" data-r="${ri}" data-d="-1" aria-label="이전">‹</button>
       <div class="track" id="t${ri}">${r.items.map((v,i)=> r.top
         ? `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="num">${i+1}</span><span class="poster" style="${art(v)}"><span class="t">${v.title}</span></span></button>`
-        : `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="ep">${v.ep}</span><span class="t">${v.title}</span>${r.progress?`<span class="bar" style="width:${r.progress[i]}%"></span>`:''}</button>`).join('')}</div>
+        : `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="t">${v.title}</span>${r.progress?`<span class="bar" style="width:${r.progress[i]}%"></span>`:''}</button>`).join('')}</div>
       <button class="arrow r" data-r="${ri}" data-d="1" aria-label="다음">›</button>
     </div>
   </section>`).join('');
