@@ -94,7 +94,7 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 .sheet .cover>.media{position:absolute;inset:0;z-index:0}
 .sheet .cover>.x{position:absolute;top:14px;right:14px;z-index:3}
 .sheet .cover .media video,.sheet .cover .media iframe{width:100%;height:100%;object-fit:cover;border:0;pointer-events:none}
-.sheet .cover .media iframe{transform:scale(1.2)}
+.sheet .cover .media iframe{transform:scale(1.35)}
 .sheet .cover .row2{display:flex;align-items:center;gap:10px;width:100%}
 .sheet .cover .snd{margin-left:auto;width:44px;height:44px;border-radius:50%;border:1.5px solid #ffffff88;background:#0005;font-size:16px}
 .sheet .two{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:28px}
@@ -123,7 +123,8 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 /* hover preview */
 #pop{position:absolute;z-index:25;background:var(--panel);border-radius:10px;overflow:hidden;box-shadow:0 18px 40px #000c;transform-origin:center;animation:popin .18s ease-out}
 @keyframes popin{from{opacity:0;transform:scale(.88)}}
-#pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px}
+#pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px;overflow:hidden}
+.ytv{opacity:0;transition:opacity .6s}.ytv.on{opacity:1}
 #pop .pv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #pop .pv b{position:relative;font-size:17px;text-shadow:0 1px 8px #000c}
 #pop .pb{padding:12px 14px 14px}
@@ -344,7 +345,7 @@ let lastFocus = null;
 function openSheet(id){
   const v = find(id); lastFocus = document.activeElement;
   const media = v.yt
-    ? `<iframe id="cv" src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`
+    ? `<iframe id="cv" class="ytv" src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`
     : v.src ? `<video id="cv" src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>` : '';
   const side = [['출연',v.cast],['장르',v.genre],['특징',v.mood]].filter(x=>x[1]).map(x=>`<p><span>${x[0]}: </span>${x[1]}</p>`).join('');
   $('sheet').innerHTML = `
@@ -368,6 +369,7 @@ function openSheet(id){
     </div></div>`;
   $('overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
+  revealYT($('sheet'));
   const hv = $('heroVid'); if(hv) hv.pause();
   $('x').onclick = closeSheet; $('sp').onclick = ()=>{ stopCover(); play(id); }; $('x').focus();
   $('lk2').onclick = ()=>{ liked.has(id)?liked.delete(id):liked.add(id); $('lk2').textContent = liked.has(id)?'♥':'♡'; };
@@ -375,10 +377,12 @@ function openSheet(id){
     const c = $('cv'); if(!c) return;
     let muted;
     if(c.tagName==='VIDEO'){ c.muted = !c.muted; muted = c.muted; }
-    else { muted = c.src.includes('mute=0'); c.src = ytSrc(v.yt, muted?1:0); }
+    else { muted = c.src.includes('mute=0'); c.src = ytSrc(v.yt, muted?1:0); c.classList.add('on'); }
     $('snd').textContent = muted?'🔇':'🔊';
   };
 }
+// 유튜브 제목·버튼이 사라진 뒤에 영상을 보여줌 (그 전엔 썸네일)
+function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) setTimeout(()=>f.classList.add('on'), 3200); }
 function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
   stopCover(); const hv = $('heroVid'); if(hv && $('player').classList.contains('hidden')) hv.play().catch(()=>{});
@@ -426,7 +430,7 @@ function showPop(card){
   const top = Math.max(r.top + scrollY - r.height*.3, scrollY + 70);
   pop.style.cssText = `left:${left}px;top:${top}px;width:${w}px`;
   pop.innerHTML = `
-    <div class="pv" style="${art(v)}">${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.2)"></iframe>`:v.src?`<video src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
+    <div class="pv" style="${art(v)}">${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" class="ytv" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.35)"></iframe>`:v.src?`<video src="${v.src}" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
     <div class="pb">
       <div class="ic">
         <button class="pl" data-a="play" aria-label="재생">▶</button>
@@ -438,6 +442,7 @@ function showPop(card){
       ${v.desc?`<p class="ds">${v.desc}</p>`:''}
     </div>`;
   popFor = v.id; pop.classList.remove('hidden');
+  revealYT(pop);
 }
 document.addEventListener('mouseover', e=>{
   if(!matchMedia('(hover:hover)').matches) return;
