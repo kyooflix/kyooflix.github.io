@@ -26,8 +26,13 @@ button:focus-visible,.card:focus-visible,label:focus-within{outline:2px solid va
 .hidden{display:none!important}
 
 /* intro */
-#intro{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;animation:introOut .6s 2.1s forwards}
-#intro .logo{font:400 clamp(64px,16vw,160px)/1 "Bebas Neue",sans-serif;color:var(--rose);letter-spacing:.02em;text-shadow:0 0 40px #f2c14e55;animation:logoIn 1.8s ease both}
+#intro{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;align-content:center;gap:28px;cursor:pointer;border:0;width:100%;color:inherit;font:inherit}
+#intro.go{animation:introOut .6s 2.3s forwards;cursor:default}
+#intro .tap{font-size:15px;color:var(--soft);animation:blink 1.6s ease-in-out infinite}
+#intro.go .tap{visibility:hidden}
+@keyframes blink{50%{opacity:.35}}
+#intro .logo{font:400 clamp(64px,16vw,160px)/1 "Bebas Neue",sans-serif;color:var(--rose);letter-spacing:.02em;text-shadow:0 0 40px #f2c14e55;opacity:.9}
+#intro.go .logo{animation:logoIn 1.8s ease both}
 #intro .logo span{color:var(--ink)}
 @keyframes logoIn{0%{opacity:0;transform:scale(.8);filter:blur(10px)}50%{opacity:1;filter:none}100%{transform:scale(1.08)}}
 @keyframes introOut{to{opacity:0;visibility:hidden}}
@@ -59,7 +64,7 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 .jj{padding:10px 16px}.jj.on{background:var(--rose);color:var(--bg)}
 .eps{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid #ffffff1a}.eps li{display:grid;grid-template-columns:28px 120px 1fr;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #ffffff1a;cursor:pointer}.eps .no{font-size:22px;color:var(--soft);text-align:center}.eps .th{aspect-ratio:16/9;border-radius:4px}.eps b{display:block;font-size:15px}.eps small{color:var(--soft)}
 @media(max-width:600px){.eps li{grid-template-columns:22px 90px 1fr}}
-#who{position:fixed;inset:0;z-index:45;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px;animation:fadein .4s 2.2s both}
+#who{position:fixed;inset:0;z-index:45;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px;animation:fadein .4s both}
 @keyframes fadein{from{opacity:0}}
 #who h2{font-size:clamp(26px,5vw,44px);font-weight:500;margin:0}
 .profs{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,3vw,28px)}
@@ -109,14 +114,14 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 #player .empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
 #player .back{position:absolute;top:16px;left:16px;z-index:2;min-height:44px;padding:8px 16px;border-radius:6px;border:0;background:#ffffff22}
 footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro .tap{visibility:visible}}
 @media (max-width:600px){header{gap:14px}.hero{min-height:420px}.arrow{display:none}}
 </style>
 </head>
 <body>
-<div id="intro" aria-hidden="true"><div class="logo">KYOO<span>FLIX</span></div></div>
+<button id="intro" type="button" aria-label="눌러서 입장하기"><span class="logo">KYOO<span>FLIX</span></span><span class="tap">화면을 눌러 입장하기</span></button>
 
-<div id="who" role="dialog" aria-label="프로필 선택">
+<div id="who" class="hidden" role="dialog" aria-label="프로필 선택">
   <h2>누구로 볼까요?</h2>
   <div class="profs">
     <button class="prof" data-c="#f2c14e"><i data-s="kyoo" style="background:linear-gradient(135deg,#c8902a,#f2c14e)"></i>뀨</button>
@@ -344,6 +349,39 @@ function closePlayer(){
 }
 $('back').onclick = closePlayer;
 renderHero();
+
+// ── 입장 사운드 (Web Audio로 직접 만든 소리: 낮은 '둥' + 반짝이는 생일 차임)
+function playIntro(){
+  try{
+    const A = new (window.AudioContext||window.webkitAudioContext)(), t = A.currentTime + .05;
+    const out = A.createGain(); out.gain.value = .9; out.connect(A.destination);
+    // 낮은 울림
+    const o = A.createOscillator(), g = A.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(70,t); o.frequency.exponentialRampToValueAtTime(38,t+1.2);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(1,t+.02); g.gain.exponentialRampToValueAtTime(.001,t+1.6);
+    o.connect(g).connect(out); o.start(t); o.stop(t+1.7);
+    // 타격감 (짧은 노이즈)
+    const len = A.sampleRate*.25, buf = A.createBuffer(1,len,A.sampleRate), d = buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+    const nz = A.createBufferSource(), lp = A.createBiquadFilter(), ng = A.createGain();
+    nz.buffer=buf; lp.type='lowpass'; lp.frequency.value=900; ng.gain.value=.5;
+    nz.connect(lp).connect(ng).connect(out); nz.start(t);
+    // 반짝이는 차임 (도-미-솔-시-레)
+    [523.25,659.25,783.99,987.77,1174.66].forEach((f,i)=>{
+      const st = t + .55 + i*.09, c = A.createOscillator(), cg = A.createGain();
+      c.type='triangle'; c.frequency.value=f;
+      cg.gain.setValueAtTime(0,st); cg.gain.linearRampToValueAtTime(.16,st+.02); cg.gain.exponentialRampToValueAtTime(.001,st+1.8);
+      c.connect(cg).connect(out); c.start(st); c.stop(st+1.9);
+    });
+  }catch(e){}
+}
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('intro').addEventListener('click', ()=>{
+  const it = $('intro'); if(it.classList.contains('go')) return;
+  it.classList.add('go'); playIntro();
+  setTimeout(()=>{ $('who').classList.remove('hidden'); if(reduce) it.classList.add('hidden'); }, reduce ? 300 : 2300);
+  setTimeout(()=>it.classList.add('hidden'), reduce ? 300 : 3000);
+});
 }
 </script>
 </body>
