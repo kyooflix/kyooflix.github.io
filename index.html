@@ -20,7 +20,7 @@
    LAYOUT: fixed top bar, hero 70vh, horizontal snap rows, detail sheet and full-screen player */
 :root{color-scheme:dark;--bg:#0b0a0c;--panel:#18161a;--ink:#f5f2f3;--soft:#a8a2a6;--rose:#f2c14e;--gold:#ffd27a}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
+body{margin:0;word-break:keep-all;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,.card:focus-visible,label:focus-within{outline:2px solid var(--rose);outline-offset:3px}
 .hidden{display:none!important}
@@ -103,7 +103,8 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 
 /* player */
 #player{position:fixed;inset:0;z-index:40;background:#000;display:grid;place-items:center}
-#player video{width:100%;height:100%;object-fit:contain}
+#player video,#player iframe{width:100%;height:100%;object-fit:contain;border:0}
+#player .ytout{position:absolute;top:16px;right:16px;z-index:2;min-height:44px;display:inline-flex;align-items:center;padding:8px 16px;border-radius:6px;background:#ffffff22;color:var(--ink);text-decoration:none;font-size:14px}
 #player .empty{text-align:center;color:var(--soft);padding:20px}
 #player .empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
 #player .back{position:absolute;top:16px;left:16px;z-index:2;min-height:44px;padding:8px 16px;border-radius:6px;border:0;background:#ffffff22}
@@ -128,7 +129,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 <header id="top">
   <div class="brand">KYOO<span>FLIX</span></div>
   <nav><a class="on" href="#">홈</a><a href="#">시리즈</a><a href="#">필모그래피</a><a href="#">비하인드</a><a href="#">내가 찜한 영상</a></nav>
-  <div class="me" aria-label="프로필"></div>
+  <button class="me" aria-label="프로필 바꾸기" style="border:0;cursor:pointer;padding:0"></button>
 </header>
 
 <section class="hero">
@@ -156,57 +157,69 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 
 <script>
 {
-// ============================================================
-//  여기만 고치면 돼요 ✏️
-//  - src: videos 폴더에 넣은 영상 파일 이름
-//  - thumb: thumbs 폴더에 넣은 썸네일 이미지 (없으면 색 배경으로 나와요)
-//  - 제목, 회차, 설명, 길이는 따옴표 안 글자만 바꾸면 돼요
-// ============================================================
 const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
-const item = (title, ep, desc, len, src, thumb) => ({id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]});
-
-const HERO = item('Happy Birthday, 이규형','메인','11월 29일 특별 편성 메인 영상.','1분','videos/main.mp4','thumbs/main.jpg');
-
-const FACE = [
-  item('얼굴 하이라이트 01','작품 1','작품 이름과 한 줄 설명을 적어주세요.','30초','videos/face1.mp4','thumbs/face1.jpg'),
-  item('얼굴 하이라이트 02','작품 2','작품 이름과 한 줄 설명을 적어주세요.','30초','videos/face2.mp4','thumbs/face2.jpg'),
-  item('얼굴 하이라이트 03','작품 3','작품 이름과 한 줄 설명을 적어주세요.','30초','videos/face3.mp4','thumbs/face3.jpg'),
-  item('얼굴 하이라이트 04','작품 4','작품 이름과 한 줄 설명을 적어주세요.','30초','videos/face4.mp4','thumbs/face4.jpg'),
-  item('얼굴 하이라이트 05','작품 5','작품 이름과 한 줄 설명을 적어주세요.','30초','videos/face5.mp4','thumbs/face5.jpg'),
-];
-const KYURAL = [
-  item('오늘의 뀨랄 01','뀨랄 1','어떤 장면인지 한 줄 설명.','20초','videos/kyural1.mp4','thumbs/kyural1.jpg'),
-  item('오늘의 뀨랄 02','뀨랄 2','어떤 장면인지 한 줄 설명.','20초','videos/kyural2.mp4','thumbs/kyural2.jpg'),
-  item('오늘의 뀨랄 03','뀨랄 3','어떤 장면인지 한 줄 설명.','20초','videos/kyural3.mp4','thumbs/kyural3.jpg'),
-  item('오늘의 뀨랄 04','뀨랄 4','어떤 장면인지 한 줄 설명.','20초','videos/kyural4.mp4','thumbs/kyural4.jpg'),
-  item('오늘의 뀨랄 05','뀨랄 5','어떤 장면인지 한 줄 설명.','20초','videos/kyural5.mp4','thumbs/kyural5.jpg'),
-];
-const EDITS = [
-  item('에딧 01','EDIT 1','에딧 설명을 적어주세요.','1분','videos/edit1.mp4','thumbs/edit1.jpg'),
-  item('에딧 02','EDIT 2','에딧 설명을 적어주세요.','1분','videos/edit2.mp4','thumbs/edit2.jpg'),
-  item('에딧 03','EDIT 3','에딧 설명을 적어주세요.','1분','videos/edit3.mp4','thumbs/edit3.jpg'),
-  item('에딧 04','EDIT 4','에딧 설명을 적어주세요.','1분','videos/edit4.mp4','thumbs/edit4.jpg'),
-  item('에딧 05','EDIT 5','에딧 설명을 적어주세요.','1분','videos/edit5.mp4','thumbs/edit5.jpg'),
-];
-
-// 이어보기·TOP 5는 위 영상을 다시 거는 줄 (새 영상 필요 없음)
-const ROWS = [
-  {name:'이어서 시청하기', items:[FACE[0],KYURAL[1],EDITS[2],FACE[3]], progress:[62,30,80,45]},
-  {name:'오늘의 TOP 5', top:true, items:[HERO,KYURAL[0],FACE[1],EDITS[0],KYURAL[2]]},
-  {name:'이규형 얼굴 하이라이트', home:true, items:FACE},
-  {name:'회원님을 위해 엄선한 오늘의 뀨랄', home:true, items:KYURAL},
-  {name:'뀨러기가 만든 지난 에딧', home:true, items:EDITS},
-];
+function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
+function yt(url, title){
+  const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
+  const y = m ? m[1] : '';
+  return {id:'v'+(n++), title, ep:'YouTube', desc:'', len:'', yt:y, thumb: y?`https://i.ytimg.com/vi/${y}/hqdefault.jpg`:'', hue:hues[n%hues.length]};
+}
+// ============================================================
+//  여기만 고치면 돼요 ✏️
+//  내 영상: file('제목','회차','설명','길이','videos/파일.mp4','thumbs/썸네일.jpg')
+//  유튜브:  yt('유튜브 링크','제목')   ← 링크만 붙여넣으면 썸네일은 자동
 // ============================================================
 
-const ALL = [HERO, ...FACE, ...KYURAL, ...EDITS];
-const find = id => ALL.find(v=>v.id===id);
+// ── 공통 메인 영상 (모든 프로필 맨 위)
+const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편성 메인 영상.','1분','videos/main.mp4','thumbs/main.jpg');
+
+// ── 내 영상 파일들
+const FACE = [1,2,3,4,5].map(i=>file('얼굴 하이라이트 0'+i,'작품 '+i,'작품 이름과 한 줄 설명을 적어주세요.','30초',`videos/face${i}.mp4`,`thumbs/face${i}.jpg`));
+const KYURAL = [1,2,3,4,5].map(i=>file('오늘의 뀨랄 0'+i,'뀨랄 '+i,'어떤 장면인지 한 줄 설명.','20초',`videos/kyural${i}.mp4`,`thumbs/kyural${i}.jpg`));
+const EDITS = [1,2,3,4,5].map(i=>file('에딧 0'+i,'EDIT '+i,'에딧 설명을 적어주세요.','1분',`videos/edit${i}.mp4`,`thumbs/edit${i}.jpg`));
+const CLIPS = [1,2,3,4,5].map(i=>file('방송 편집 0'+i,'CLIP '+i,'어떤 방송인지 한 줄 설명.','1분',`videos/clip${i}.mp4`,`thumbs/clip${i}.jpg`));
+
+// ── 프로필별 홈 화면 (줄 이름과 영상 목록)
+const PROFILES = {
+  // 🐈‍⬛ 뀨
+  kyoo: [
+    {name:'이어서 시청하기', items:[FACE[0],KYURAL[1],EDITS[2],FACE[3]], progress:[62,30,80,45]},
+    {name:'오늘의 TOP 5', top:true, items:[HERO,KYURAL[0],FACE[1],EDITS[0],KYURAL[2]]},
+    {name:'이규형 얼굴 하이라이트', items:FACE},
+    {name:'회원님을 위해 엄선한 오늘의 뀨랄', items:KYURAL},
+    {name:'이규형 공식 유튜브', items:[
+      yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04'), yt('','영상 05'),
+    ]},
+  ],
+  // 🐟 뀨러기
+  fan: [
+    {name:'뀨러기가 편집한 방송 영상', items:CLIPS},
+    {name:'뀨러기가 만든 지난 에딧', items:EDITS},
+  ],
+  // 🎂 11월 (소속사 공식 영상)
+  cake: [
+    {name:'줄 이름 1 (예: 비하인드)', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+    {name:'줄 이름 2 (예: 인터뷰)', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+    {name:'줄 이름 3 (예: 화보 현장)', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+  ],
+  // 🎁 29일 (작품별 추천)
+  gift: [
+    {name:'OO 추천 영상들', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+    {name:'OO 추천 영상들', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+    {name:'OO 추천 영상들', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+  ],
+};
+// ============================================================
+let PROFILE = 'kyoo';
+const rowsNow = () => PROFILES[PROFILE] || [];
+const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
+const find = id => ALL().find(v=>v.id===id);
 const art = v => `background:${v.thumb?`url('${v.thumb}') center/cover no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
 const $ = id => document.getElementById(id);
 const jjim = new Set();
-const rowOf = v => ROWS.find(r=>r.home && r.items.includes(v));
-const eps = v => { const r = rowOf(v); if(!r) return ''; return `<h4 style="margin:22px 0 0">${r.name}</h4><ul class="eps">${r.items.map((e,i)=>`<li data-play="${e.id}"><span class="no">${i+1}</span><span class="th" style="${art(e)}"></span><span><b>${e.title}</b><small>${e.len} · ${e.desc}</small></span></li>`).join('')}</ul>`; };
+const rowOf = v => rowsNow().find(r=>!r.top && !r.progress && r.items.includes(v));
+const eps = v => { const r = rowOf(v); if(!r) return ''; return `<h4 style="margin:22px 0 0">${r.name}</h4><ul class="eps">${r.items.map((e,i)=>`<li data-play="${e.id}"><span class="no">${i+1}</span><span class="th" style="${art(e)}"></span><span><b>${e.title}</b><small>${[e.len,e.desc].filter(Boolean).join(' · ')||e.ep}</small></span></li>`).join('')}</ul>`; };
 const SPR = {
   kyoo:[`....................`,`....................`,`.................Q..`,`..QQ..QQ.........QQ.`,`..QQQQQQ..........Q.`,`Q.QQQQQQ.Q.......QQ.`,`.QQQQQQQQQ.......Q..`,`..QQQQQQQ.......QQ..`,`...QQQQQQQQQQQQQQ...`,`....QQQQQQQQQQQQQ...`,`....QQQQQQQQQQQQQ...`,`....QQQQQQQQQQQQQ...`,`.....QQQQQQQQQQQQ...`,`.....QQQQQQQQQQQQ...`,`.....QQQQQ..QQQQQQ..`,`.....QQ.QQ..QQ..QQ..`,`.....QQ.Q...QQ...Q..`,`....QQ.QQ..QQ...QQ..`,`....................`,`....................`],
   fan:[`....................`,`....................`,`.......iiiiii.......`,`......ihhhhhhi......`,`......hhhqqhhh......`,`.....r9hhhhhh9r.....`,`....rnn9hhhh9xxr....`,`...rnnnn9999xxxxr...`,`...rnnnnnnnnxxxxr...`,`...rrnnnnnnnnxxrr...`,`....rrrrrrrrrrrr....`,`...yyyyyyyyyyyyyy...`,`...yyyyyyyyyyyyyy...`,`...yyyeeeeyyeyyyy...`,`...yyeeEeeeeeyyyy...`,`...yyyeeeeyyeyyyy...`,`...yyyyyyyyyyyyyy...`,`...99999999999999...`,`....................`,`....................`],
@@ -216,9 +229,15 @@ const SPR = {
 const PAL = {K:'#2b2220',S:'#f3c9a8',E:'#1a1414',B:'#f2a0a0',M:'#c0605c',W:'#ffffff',w:'#eef0f4',G:'#8d8a90',D:'#3a3a3a',H:'#6b3e26',Y:'#fff3a6',L:'#9a9a9a',F:'#ffb13b',f:'#ffe27a',C:'#ffffff',A:'#f6d9a8',P:'#ffb3c4',T:'#dcdce2',R:'#f2c14e',N:'#7b787e',J:'#3b4352',t:'#c9a77c',O:'#151515',V:'#dfe3ea',k:'#c3c8cf',Q:'#19171b',g:'#c6e04a',1:'#c7ccd3',2:'#e9edf2',3:'#aeb4bd',4:'#ffffff',5:'#2fb3a5',6:'#d6f1ff',7:'#9aa0a8',o:'#f0a05a',u:'#fbfaf7',b:'#7fbff0',d:'#4f93d6',l:'#e3f3ff',m:'#f29a9a',z:'#4a2a10',r:'#d9a54a',9:'#a8752a',n:'#f08a6c',x:'#c9604a',h:'#cdb488',i:'#e6d3a6',q:'#b39a6c',y:'#1f3a1c',e:'#e9e7a6'};
 const sprite = m => `<svg viewBox="0 0 ${m[0].length} ${m.length}" width="72%" height="72%" shape-rendering="crispEdges" aria-hidden="true">${m.flatMap((row,y)=>[...row].map((c,x)=>PAL[c]?`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PAL[c]}"/>`:'')).join('')}</svg>`;
 document.querySelectorAll('.prof i[data-s]').forEach(i=>{ i.innerHTML = sprite(SPR[i.dataset.s]); });
-document.querySelectorAll('.prof').forEach(b=>b.addEventListener('click',()=>{ const me=document.querySelector('.me'); me.style.background=b.dataset.c; me.innerHTML=b.querySelector('i').innerHTML; $('who').classList.add('hidden'); }));
+document.querySelectorAll('.prof').forEach(b=>b.addEventListener('click',()=>{
+  const me=document.querySelector('.me'); me.style.background=b.dataset.c; me.innerHTML=b.querySelector('i').innerHTML;
+  PROFILE = b.querySelector('i').dataset.s; renderRows(); scrollTo(0,0);
+  $('who').classList.add('hidden');
+}));
+document.querySelector('.me').addEventListener('click',()=>{ $('who').style.animation='none'; $('who').classList.remove('hidden'); });
 
-$('rows').innerHTML = ROWS.map((r,ri)=>`
+function renderRows(){
+$('rows').innerHTML = rowsNow().map((r,ri)=>`
   <section class="row ${r.top?'top':''}">
     <h2>${r.name}</h2>
     <div class="rail">
@@ -229,6 +248,8 @@ $('rows').innerHTML = ROWS.map((r,ri)=>`
       <button class="arrow r" data-r="${ri}" data-d="1" aria-label="다음">›</button>
     </div>
   </section>`).join('');
+}
+renderRows();
 
 document.addEventListener('click', e=>{
   const j = e.target.closest('.jj');
@@ -275,8 +296,8 @@ function openSheet(id){
       <div><h3>${v.title}</h3><div class="acts"><button class="btn play" id="sp">▶ 재생</button><button class="btn more jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button></div></div>
     </div>
     <div class="body">
-      <div class="meta"><b>생일 특집</b><span>2026</span><span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">ALL</span><span>${v.len}</span><span>HD</span></div>
-      <p>${v.desc}</p>
+      <div class="meta"><b>생일 특집</b><span>2026</span><span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">ALL</span>${v.len?`<span>${v.len}</span>`:''}<span>${v.yt?'YouTube':'HD'}</span></div>
+      ${v.desc?`<p>${v.desc}</p>`:''}
       ${eps(v)}
     </div>`;
   $('overlay').classList.remove('hidden');
@@ -292,7 +313,9 @@ $('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeShe
 // player
 function play(id){
   const v = find(id);
-  $('pbody').innerHTML = v.src
+  $('pbody').innerHTML = v.yt
+    ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&playsinline=1&rel=0" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe><a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
+    : v.src
     ? `<video src="${v.src}" controls autoplay playsinline></video>`
     : `<div class="empty"><b>${v.title}</b>영상을 준비 중이에요.</div>`;
   $('player').classList.remove('hidden');
