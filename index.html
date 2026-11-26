@@ -136,6 +136,10 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 #pop .mt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--soft)}
 #pop .mt .ag{border:1px solid #ffffff55;padding:0 5px;border-radius:3px;font-size:12px}
 #pop .ds{margin:8px 0 0;font-size:13px;color:#ddd}
+.rt{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 5px;border-radius:4px;font:900 12px/1 'Noto Sans KR',sans-serif;color:#111}
+.rALL{background:#3fbf6f}.r12{background:#f2c14e}.r15{background:#f08a3c}.r19{background:#e0453a;color:#fff}
+.sheet .meta{align-items:center}
+.sheet .desc{font-size:16px;line-height:1.7;margin:12px 0 0}
 @media (hover:none){#pop{display:none!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
 @media (max-width:600px){header{gap:14px}.hero{min-height:420px}.arrow{display:none}}
@@ -249,9 +253,27 @@ const PROFILES = {
   ],
 };
 
-// ── 상세 정보 (영상 제목을 그대로 쓰고, 넣고 싶은 항목만 채우면 돼요)
+// ── 상세 정보 (카드 제목을 그대로 쓰고, 넣고 싶은 항목만 채우면 돼요. 없는 항목은 화면에 안 나와요)
 const INFO = {
-  // '육교 뛰어올라가기': {year:'2024', desc:'설명', cast:'이규형', genre:'브이로그', mood:'웃긴, 귀여운'},
+  '육교 뛰어올라가기': {type:'다큐멘터리', age:'ALL', len:'32초', tags:'웃긴 • 생생한', year:'2013',
+    desc:'왜 이러는 걸까요. MGM GRAND HOTEL 앞 육교. 라스베가스 떠나는 날 아침 6시.',
+    cast:'이규형', genre:'다큐멘터리, 일상', mood:'웃긴, 생생한'},
+  '왜 가난하고 그래?': {type:'뮤지컬', age:'15', len:'1분 40초', tags:'재밌는 • 흥미진진 • 멀티캐스팅', year:'2021',
+    desc:'왜 뼈를 때리고 그래?',
+    cast:'이규형, 애덜버트 다이스뀨스', genre:'뮤지컬, 코미디 시리즈', mood:'재밌는, 흥미진진'},
+  '다이스뀨스 퀵체인지': {type:'작품 비하인드', age:'15', len:'2분 48초', tags:'고단한 • 흥미진진 • 멀티캐스팅', year:'2021',
+    desc:'물 마시는 게 진짜 귀여움. Musical "Gentlemans Guide" Costume Quick change.',
+    cast:'이규형, 애덜버트 다이스뀨스, 에제키엘 다이스뀨스, 에스퀴스 다이스뀨스 1세, 히아신스 다이스뀨스', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'고단한, 재밌는'},
+  '목숨 건 특수분장': {type:'예능', age:'12', len:'6분 17초', tags:'순한 맛 코미디 • 유쾌 발랄 • 셀럽', year:'2024',
+    desc:'콧구멍도 막아요? 아니 그럼 죽지;',
+    cast:'이규형, 한국분장 사장님', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'순한 맛 코미디, 재밌는, 흥미진진'},
+  '뷰튜버 본격 데뷔': {type:'예능', age:'12', len:'8분 44초', tags:'순한 맛 코미디 • 유쾌 발랄 • 셀럽', year:'2024',
+    desc:'아버님 거?',
+    cast:'이규형, 직원1, 직원2', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'순한 맛 코미디, 재밌는, 흥미진진'},
+  '희노애락 런던': {type:'시리즈', age:'15', len:'14분 30초', tags:'긴장감 넘치는 • 유쾌 발랄 • 셀럽', year:'2024',
+    desc:'내 고향 런던.',
+    cast:'이규형, 친구1', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'재밌는, 긴장감 넘치는, 흥미진진'},
+  // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
 let PROFILE = 'kyoo';
@@ -362,8 +384,8 @@ function openSheet(id){
     </div>
     <div class="body"><div class="two">
       <div>
-        <div class="meta"><span>${v.year||'2026'}</span>${v.len?`<span>${v.len}</span>`:''}<span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">${v.yt?'YouTube':'HD'}</span><b>생일 특집</b></div>
-        ${v.desc?`<p>${v.desc}</p>`:''}
+        <div class="meta"><span>${v.year||'2026'}</span>${v.len?`<span>${v.len}</span>`:''}<span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">HD</span>${rate(v.age)}</div>
+        ${v.desc?`<p class="desc">${v.desc}</p>`:''}
       </div>
       <div class="side">${side}</div>
     </div></div>`;
@@ -382,6 +404,7 @@ function openSheet(id){
   };
 }
 // 유튜브 제목·버튼이 사라진 뒤에 영상을 보여줌 (그 전엔 썸네일)
+const rate = a => a ? `<span class="rt r${a}">${a}</span>` : '';
 function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) setTimeout(()=>f.classList.add('on'), 1000); }
 function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
@@ -438,8 +461,8 @@ function showPop(card){
         <button class="lk ${liked.has(v.id)?'on':''}" data-a="like" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
         <button class="mo" data-a="more" aria-label="상세 정보">⌄</button>
       </div>
-      <div class="mt"><span>생일 특집</span><span class="ag">ALL</span>${v.len?`<span>${v.len}</span>`:''}<span>${v.yt?'YouTube':'HD'}</span></div>
-      ${v.desc?`<p class="ds">${v.desc}</p>`:''}
+      <div class="mt"><span>${v.type||'생일 특집'}</span>${rate(v.age)}${v.len?`<span>${v.len}</span>`:''}<span class="ag">HD</span></div>
+      ${v.tags?`<p class="ds">${v.tags}</p>`:''}
     </div>`;
   popFor = v.id; pop.classList.remove('hidden');
   revealYT(pop);
