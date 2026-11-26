@@ -230,12 +230,15 @@ const BACK = [
   yt('https://youtu.be/Z98wU0hFkNA','희노애락 런던'),
 ];
 
+// ── 오늘의 TOP 5 (모든 프로필 공통, 순서대로 1위~5위)
+const TOP5 = [HERO, KYURAL[0], FACE[1], BACK[0], EDITS[0]];
+
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
   // 🐈‍⬛ 뀨
   kyoo: [
     {name:'이어서 시청하기', items:[FACE[0],KYURAL[1],EDITS[2],FACE[3]], progress:[62,30,80,45]},
-    {name:'오늘의 TOP 5', top:true, items:[HERO,KYURAL[0],FACE[1],BACK[0],KYURAL[2]]},
+    {name:'오늘의 TOP 5', top:true, items:TOP5},
     {name:'이규형 얼굴 하이라이트', items:FACE},
     {name:'회원님을 위해 엄선한 오늘의 뀨랄', items:KYURAL},
     {name:'돌아와요 규형이형', items:BACK},
@@ -281,19 +284,19 @@ const INFO = {
     cast:'이규형, 친구1', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'재밌는, 긴장감 넘치는, 흥미진진'},
   '도대체 뭘 먹고 자랐길래 . .': {type:'에딧', age:'12', len:'30초', tags:'먹방 • 귀여운 • 셀럽', year:'2026',
     desc:'뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고',
-    cast:'이규형', genre:'먹방, 리얼리티 시리즈, 버라이어티 시리즈', mood:'아기자기한, 귀여운, 리듬감 있는'},
-  'paw, paw!': {type:'에딧', age:'12', len:'27초', tags:'동물 • 귀여운 • 셀럽', year:'2026',
+    cast:'이규형', genre:'먹방, 리얼리티 시리즈, 음악 영상', mood:'아기자기한, 귀여운, 리듬감 있는'},
+  'paw, paw!': {type:'에딧', age:'12', len:'27초', tags:'동물 • 아기자기한 • 힐링', year:'2026',
     desc:'스텔라랑 같이 있는 이규형이 너무 좋은 사람들의 모임',
-    cast:'이규형, 스텔라', genre:'힐링, 리얼리티 시리즈, 버라이어티 시리즈', mood:'힐링, 아기자기한, 귀여운, 리듬감 있는'},
-  'I Wanna Be': {type:'에딧', age:'15', len:'1분 11초', tags:'아기자기한 • 귀여운 • 셀럽', year:'2026',
+    cast:'이규형, 스텔라', genre:'힐링, 리얼리티 시리즈, 음악 영상', mood:'힐링, 아기자기한, 귀여운, 리듬감 있는'},
+  'I Wanna Be': {type:'에딧', age:'15', len:'1분 11초', tags:'통통 튀는 • 귀여운 • 셀럽', year:'2026',
     desc:'모든 게 되고 싶은데',
-    cast:'이규형, 김태희, 스텔라, 안창용, 허윤슬, 서우진, 고은성', genre:'힐링, 리얼리티 시리즈, 버라이어티 시리즈', mood:'힐링, 아기자기한, 귀여운, 리듬감 있는'},
-  'NEON (이혼 앤 이혼)': {type:'에딧', age:'17', len:'24초', tags:'안타까운 • 잔인한 • 셀럽', year:'2026',
+    cast:'이규형, 김태희, 스텔라, 안창용, 허윤슬, 서우진, 고은성', genre:'힐링, 리얼리티 시리즈, 음악 영상', mood:'발랄한, 아기자기한, 통통 튀는'},
+  'NEON (이혼 앤 이혼)': {type:'에딧', age:'17', len:'24초', tags:'안타까운 • 잔인한 • 비극적인', year:'2026',
     desc:'뀨필모의 순탄한 결혼 생활 및 자식 농사를 응원합니다.',
-    cast:'이규형, 박순용, 좌시백, 윤세원, 조강화, 싱글대디, 파렴치한 남편, 이동식, 이승영', genre:'비극적인 시리즈, 사회 현실', mood:'안타까운, 잔인한, 비극적인, 리듬감 있는'},
-  '(돼...) Gee': {type:'에딧', age:'15', len:'22초', tags:'먹방 • 아기자기한 • 귀여운 • 셀럽', year:'2026',
+    cast:'이규형, 박순용, 좌시백, 윤세원, 조강화, 싱글대디, 파렴치한 남편, 이동식, 이승영', genre:'비극적인 시리즈, 사회 현실, 음악 영상', mood:'안타까운, 잔인한, 비극적인, 리듬감 있는'},
+  '(돼...) Gee': {type:'에딧', age:'15', len:'22초', tags:'먹방 • 아기자기한 • 귀여운 • 유쾌한', year:'2026',
     desc:'니가 돼지냐? 예, 그렇슴다.',
-    cast:'이규형', genre:'먹방, 리얼리티 시리즈, 버라이어티 시리즈', mood:'아기자기한, 귀여운, 리듬감 있는'},
+    cast:'이규형', genre:'먹방, 리얼리티 시리즈, 음악 영상', mood:'아기자기한, 귀여운, 리듬감 있는'},
   // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
@@ -303,15 +306,13 @@ const autoRows = rows => {
   if(rows.some(r=>r.top)) return rows;
   const pool = []; const max = Math.max(0, ...rows.map(r=>r.items.length));
   for(let i=0;i<max;i++) rows.forEach(r=>{ if(r.items[i]) pool.push(r.items[i]); });
-  const cont = pool.slice(0,4), top = [HERO, ...pool.slice(4,8)];
-  if(top.length < 5) top.push(...pool.filter(v=>!top.includes(v)).slice(0, 5-top.length));
-  return [{name:'이어서 시청하기', items:cont, progress:[62,30,80,45]}, {name:'오늘의 TOP 5', top:true, items:top}, ...rows];
+  return [{name:'이어서 시청하기', items:pool.slice(0,4), progress:[62,30,80,45]}, {name:'오늘의 TOP 5', top:true, items:TOP5}, ...rows];
 };
 const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
 const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
 const find = id => ALL().find(v=>v.id===id);
 ALL().forEach(v=>Object.assign(v, INFO[v.title]||{}));
-const art = v => `background:${v.thumb?`url('${v.thumb}') center/cover no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
+const art = (v, poster) => `background:${v.thumb?`url('${v.thumb}') center/${v.yt&&poster?'auto 134%':'cover'} no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
 const $ = id => document.getElementById(id);
 const jjim = new Set();
 const rowOf = v => rowsNow().find(r=>!r.top && !r.progress && r.items.includes(v));
@@ -340,7 +341,7 @@ $('rows').innerHTML = rowsNow().map((r,ri)=>`
     <div class="rail">
       <button class="arrow l" data-r="${ri}" data-d="-1" aria-label="이전">‹</button>
       <div class="track" id="t${ri}">${r.items.map((v,i)=> r.top
-        ? `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="num">${i+1}</span><span class="poster" style="${art(v)}"><span class="t">${v.title}</span></span></button>`
+        ? `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="num">${i+1}</span><span class="poster" style="${art(v,true)}"><span class="t">${v.title}</span></span></button>`
         : `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="t">${v.title}</span>${r.progress?`<span class="bar" style="width:${r.progress[i]}%"></span>`:''}</button>`).join('')}</div>
       <button class="arrow r" data-r="${ri}" data-d="1" aria-label="다음">›</button>
     </div>
