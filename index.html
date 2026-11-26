@@ -135,11 +135,11 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 #pop .ic .mo{margin-left:auto}
 #pop .mt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--soft)}
 #pop .mt .ag{border:1px solid #ffffff55;padding:0 5px;border-radius:3px;font-size:12px}
-#pop .ds{margin:8px 0 0;font-size:13px;color:#ddd}
+#pop .ds{margin:8px 0 0;font-size:13px;color:#ddd;overflow-wrap:anywhere}
 .rt{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 5px;border-radius:4px;font:900 12px/1 'Noto Sans KR',sans-serif;color:#111}
 .rALL{background:#3fbf6f}.r12{background:#f2c14e}.r15{background:#f08a3c}.r19{background:#e0453a;color:#fff}
 .sheet .meta{align-items:center}
-.sheet .desc{font-size:16px;line-height:1.7;margin:12px 0 0}
+.sheet .desc{font-size:16px;line-height:1.7;margin:12px 0 0;overflow-wrap:anywhere}
 @media (hover:none){#pop{display:none!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
 @media (max-width:600px){header{gap:14px}.hero{min-height:420px}.arrow{display:none}}
@@ -211,7 +211,13 @@ const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편�
 // ── 내 영상 파일들
 const FACE = [1,2,3,4,5].map(i=>file('얼굴 하이라이트 0'+i,'작품 '+i,'작품 이름과 한 줄 설명을 적어주세요.','30초',`videos/face${i}.mp4`,`thumbs/face${i}.jpg`));
 const KYURAL = [1,2,3,4,5].map(i=>file('오늘의 뀨랄 0'+i,'뀨랄 '+i,'어떤 장면인지 한 줄 설명.','20초',`videos/kyural${i}.mp4`,`thumbs/kyural${i}.jpg`));
-const EDITS = [1,2,3,4,5].map(i=>file('에딧 0'+i,'EDIT '+i,'에딧 설명을 적어주세요.','1분',`videos/edit${i}.mp4`,`thumbs/edit${i}.jpg`));
+const EDITS = [
+  file('도대체 뭘 먹고 자랐길래 . .','EDIT 1','','30초','videos/edit1.mp4','thumbs/edit1.jpg'),
+  file('에딧 02','EDIT 2','','','videos/edit2.mp4','thumbs/edit2.jpg'),
+  file('에딧 03','EDIT 3','','','videos/edit3.mp4','thumbs/edit3.jpg'),
+  file('에딧 04','EDIT 4','','','videos/edit4.mp4','thumbs/edit4.jpg'),
+  file('에딧 05','EDIT 5','','','videos/edit5.mp4','thumbs/edit5.jpg'),
+];
 const CLIPS = [1,2,3,4,5].map(i=>file('방송 편집 0'+i,'CLIP '+i,'어떤 방송인지 한 줄 설명.','1분',`videos/clip${i}.mp4`,`thumbs/clip${i}.jpg`));
 
 // ── 유튜브: 돌아와요 규형이형
@@ -273,6 +279,9 @@ const INFO = {
   '희노애락 런던': {type:'시리즈', age:'15', len:'14분 30초', tags:'긴장감 넘치는 • 유쾌 발랄 • 셀럽', year:'2024',
     desc:'내 고향 런던.',
     cast:'이규형, 친구1', genre:'리얼리티 시리즈, 버라이어티 시리즈', mood:'재밌는, 긴장감 넘치는, 흥미진진'},
+  '도대체 뭘 먹고 자랐길래 . .': {type:'에딧', age:'12', len:'30초', tags:'먹방 • 귀여운 • 셀럽', year:'2026',
+    desc:'뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고뭘먹고',
+    cast:'이규형', genre:'먹방, 리얼리티 시리즈, 버라이어티 시리즈', mood:'아기자기한, 귀여운, 리듬감 있는'},
   // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
