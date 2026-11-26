@@ -382,7 +382,7 @@ function openSheet(id){
   };
 }
 // 유튜브 제목·버튼이 사라진 뒤에 영상을 보여줌 (그 전엔 썸네일)
-function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) setTimeout(()=>f.classList.add('on'), 3200); }
+function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) setTimeout(()=>f.classList.add('on'), 1000); }
 function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
   stopCover(); const hv = $('heroVid'); if(hv && $('player').classList.contains('hidden')) hv.play().catch(()=>{});
