@@ -115,6 +115,9 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 #pbody{position:absolute;inset:0;display:grid;place-items:center}
 #player video{width:100%;height:100%;object-fit:contain}
 #player iframe{width:min(100%,calc(100vh*16/9));height:auto;aspect-ratio:16/9;border:0}
+  .sheet .cover>div:not(.media){pointer-events:none}.sheet .cover .row2>*{pointer-events:auto}
+  .sheet .cover>.tapplay{position:absolute;inset:0;z-index:1;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer}
+.tapplay span{width:64px;height:64px;border-radius:50%;background:#000a;border:2px solid #ffffffcc;display:grid;place-items:center;font-size:24px;padding-left:4px}
 #player .unmute{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:2;min-height:44px;padding:10px 20px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;box-shadow:0 6px 20px #0008}
 #player .ytout{position:absolute;top:16px;right:16px;z-index:2;min-height:44px;display:inline-flex;align-items:center;padding:8px 16px;border-radius:6px;background:#ffffff22;color:var(--ink);text-decoration:none;font-size:14px}
 #player .empty{text-align:center;color:var(--soft);padding:20px}
@@ -403,6 +406,7 @@ function openSheet(id){
   $('sheet').innerHTML = `
     <div class="cover" style="${art(v)}">
       <div class="media">${media}</div>
+      ${v.yt && matchMedia('(hover:none)').matches ? '<button class="tapplay" id="tapplay" aria-label="미리보기 재생"><span>▶</span></button>' : ''}
       <button class="x" id="x" aria-label="닫기">✕</button>
       <div style="width:100%"><h3>${v.title}</h3>
         <div class="row2">
@@ -422,6 +426,11 @@ function openSheet(id){
   $('overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
   revealYT($('sheet'));
+  const tp = $('tapplay'), cvf = $('cv');
+  if(tp && cvf){
+    tp.onclick = ()=>{ ytCmd(cvf,'unMute'); ytCmd(cvf,'playVideo'); cvf.dataset.m='0'; cvf.classList.add('on'); tp.remove(); if($('snd')) $('snd').textContent='🔊'; };
+    cvf.addEventListener('ytplaying', ()=>{ if(tp.isConnected) tp.remove(); });
+  }
   const hv = $('heroVid'); if(hv) hv.pause();
   $('x').onclick = closeSheet; $('sp').onclick = ()=>{ stopCover(); play(id); }; $('x').focus();
   $('lk2').onclick = ()=>{ liked.has(id)?liked.delete(id):liked.add(id); $('lk2').textContent = liked.has(id)?'♥':'♡'; };
@@ -441,7 +450,7 @@ function ytPost(f, msg){ try{ f.contentWindow.postMessage(JSON.stringify(msg), '
 function ytCmd(f, func){ ytPost(f, {event:'command', func, args:[]}); }
 function ytListen(f){
   const hello = ()=>ytPost(f, {event:'listening', id:'kyoo', channel:'widget'});
-  f.addEventListener('load', ()=>{ hello(); setTimeout(hello, 600); setTimeout(hello, 1500); });
+  f.addEventListener('load', ()=>{ hello(); setTimeout(hello, 600); setTimeout(hello, 1500); setTimeout(()=>ytCmd(f,'playVideo'), 300); });
 }
 addEventListener('message', e=>{
   if(!/youtube/.test(String(e.origin))) return;
@@ -449,7 +458,11 @@ addEventListener('message', e=>{
   if(!d) return;
   const st = d.event==='onStateChange' ? d.info : (d.info && d.info.playerState);
   if(st!==1) return;   // 1 = 재생 중
-  document.querySelectorAll('iframe.ytv:not(.on)').forEach(f=>{ if(f.contentWindow===e.source) setTimeout(()=>f.classList.add('on'), 700); });
+  document.querySelectorAll('iframe').forEach(f=>{
+    if(f.contentWindow!==e.source || f.dataset.playing) return;
+    f.dataset.playing = '1'; f.dispatchEvent(new Event('ytplaying'));
+    if(f.classList.contains('ytv')) setTimeout(()=>f.classList.add('on'), 700);
+  });
 });
 function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
@@ -463,7 +476,7 @@ $('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeShe
 function play(id){
   const v = find(id), touch = matchMedia('(hover:none)').matches;
   $('pbody').innerHTML = v.yt
-    ? `<iframe id="pyt" src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&mute=${touch?1:0}&playsinline=1&rel=0&enablejsapi=1" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>${touch?'<button class="unmute" id="unm">🔊 눌러서 소리 켜기</button>':''}<a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
+    ? `<iframe id="pyt" src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&mute=${touch?1:0}&playsinline=1&rel=0&enablejsapi=1" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>${touch?'<button class="unmute" id="unm">▶ 눌러서 재생</button>':''}<a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
     : v.src
     ? `<video src="${v.src}" controls autoplay playsinline></video>`
     : `<div class="empty"><b>${v.title}</b>영상을 준비 중이에요.</div>`;
@@ -475,7 +488,13 @@ function play(id){
     pv.play().catch(()=>{}); pv.requestFullscreen?.().catch(()=>{});
   }
   const pf = $('pyt');
-  if(pf){ ytListen(pf); const u = $('unm'); if(u) u.onclick = ()=>{ ytCmd(pf,'unMute'); ytCmd(pf,'playVideo'); u.remove(); }; }
+  if(pf){
+    ytListen(pf); const u = $('unm');
+    if(u){
+      u.onclick = ()=>{ ytCmd(pf,'unMute'); ytCmd(pf,'playVideo'); u.remove(); };
+      pf.addEventListener('ytplaying', ()=>{ if(u.isConnected) u.textContent = '🔊 눌러서 소리 켜기'; });
+    }
+  }
   $('back').focus();
 }
 function closePlayer(){
