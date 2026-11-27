@@ -115,6 +115,7 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 #pbody{position:absolute;inset:0;display:grid;place-items:center}
 #player video{width:100%;height:100%;object-fit:contain}
 #player iframe{width:min(100%,calc(100vh*16/9));height:auto;aspect-ratio:16/9;border:0}
+#player .unmute{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:2;min-height:44px;padding:10px 20px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;box-shadow:0 6px 20px #0008}
 #player .ytout{position:absolute;top:16px;right:16px;z-index:2;min-height:44px;display:inline-flex;align-items:center;padding:8px 16px;border-radius:6px;background:#ffffff22;color:var(--ink);text-decoration:none;font-size:14px}
 #player .empty{text-align:center;color:var(--soft);padding:20px}
 #player .empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
@@ -200,7 +201,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
 function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
-const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1`;
+const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`;
 function yt(url, title){
   const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
   const y = m ? m[1] : '';
@@ -428,13 +429,28 @@ function openSheet(id){
     const c = $('cv'); if(!c) return;
     let muted;
     if(c.tagName==='VIDEO'){ c.muted = !c.muted; muted = c.muted; }
-    else { muted = c.src.includes('mute=0'); c.src = ytSrc(v.yt, muted?1:0); c.classList.add('on'); }
+    else { c.dataset.m = c.dataset.m==='0' ? '1' : '0'; muted = c.dataset.m!=='0'; ytCmd(c, muted?'mute':'unMute'); ytCmd(c,'playVideo'); c.classList.add('on'); }
     $('snd').textContent = muted?'🔇':'🔊';
   };
 }
 // 유튜브 제목·버튼이 사라진 뒤에 영상을 보여줌 (그 전엔 썸네일)
 const rate = a => a ? `<span class="rt r${a}">${a}</span>` : '';
-function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) setTimeout(()=>f.classList.add('on'), 1000); }
+function revealYT(root){ const f = root.querySelector('iframe.ytv'); if(f) ytListen(f); }
+// 유튜브 플레이어와 대화하기 (재생 중인지 알아내고, 소리 켜기/끄기 명령 보내기)
+function ytPost(f, msg){ try{ f.contentWindow.postMessage(JSON.stringify(msg), '*'); }catch(e){} }
+function ytCmd(f, func){ ytPost(f, {event:'command', func, args:[]}); }
+function ytListen(f){
+  const hello = ()=>ytPost(f, {event:'listening', id:'kyoo', channel:'widget'});
+  f.addEventListener('load', ()=>{ hello(); setTimeout(hello, 600); setTimeout(hello, 1500); });
+}
+addEventListener('message', e=>{
+  if(!/youtube/.test(String(e.origin))) return;
+  let d; try{ d = typeof e.data==='string' ? JSON.parse(e.data) : e.data; }catch(_){ return; }
+  if(!d) return;
+  const st = d.event==='onStateChange' ? d.info : (d.info && d.info.playerState);
+  if(st!==1) return;   // 1 = 재생 중
+  document.querySelectorAll('iframe.ytv:not(.on)').forEach(f=>{ if(f.contentWindow===e.source) setTimeout(()=>f.classList.add('on'), 700); });
+});
 function stopCover(){ const c=$('cv'); if(c){ if(c.tagName==='VIDEO') c.pause(); c.remove(); } }
 function closeSheet(){
   stopCover(); const hv = $('heroVid'); if(hv && $('player').classList.contains('hidden')) hv.play().catch(()=>{});
@@ -445,9 +461,9 @@ $('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeShe
 
 // player
 function play(id){
-  const v = find(id);
+  const v = find(id), touch = matchMedia('(hover:none)').matches;
   $('pbody').innerHTML = v.yt
-    ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&playsinline=1&rel=0" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe><a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
+    ? `<iframe id="pyt" src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&mute=${touch?1:0}&playsinline=1&rel=0&enablejsapi=1" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>${touch?'<button class="unmute" id="unm">🔊 눌러서 소리 켜기</button>':''}<a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
     : v.src
     ? `<video src="${v.src}" controls autoplay playsinline></video>`
     : `<div class="empty"><b>${v.title}</b>영상을 준비 중이에요.</div>`;
@@ -458,6 +474,8 @@ function play(id){
     pv.onerror = ()=>{ $('pbody').innerHTML = `<div class="empty"><b>${v.title}</b>영상을 준비 중이에요.</div>`; };
     pv.play().catch(()=>{}); pv.requestFullscreen?.().catch(()=>{});
   }
+  const pf = $('pyt');
+  if(pf){ ytListen(pf); const u = $('unm'); if(u) u.onclick = ()=>{ ytCmd(pf,'unMute'); ytCmd(pf,'playVideo'); u.remove(); }; }
   $('back').focus();
 }
 function closePlayer(){
