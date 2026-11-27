@@ -131,6 +131,8 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 @keyframes popin{from{opacity:0;transform:scale(.88)}}
 #pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px;overflow:hidden}
 .ytv{opacity:0;transition:opacity .6s}.ytv.on{opacity:1}
+/* 유튜브로 열리는 카드 표시 */
+.ytb{position:absolute;top:8px;right:8px;z-index:2;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#000b;color:#fff;letter-spacing:.01em}
 #pop .pvbg{position:absolute;inset:0;transform-origin:center}
 #pop .pv video{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);object-fit:cover}
 .fv{opacity:0;transition:opacity .6s ease}.fv.on{opacity:1}
@@ -209,6 +211,10 @@ const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
 function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
 const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`;
+// ytx(): 페이지 안에서 틀지 않고 누르면 유튜브(앱/사이트)로 바로 열리는 영상
+function ytx(url, title){ return Object.assign(yt(url, title, true), {ext:true}); }
+const ytUrl = v => `https://youtu.be/${v.yt}`;
+function openYT(v){ const w = window.open(ytUrl(v), '_blank'); if(w){ try{ w.opener = null; }catch(e){} } else location.href = ytUrl(v); }
 // 세 번째에 true를 주면 원래 썸네일을 살짝 확대해서 가장자리 테두리를 잘라내요
 function yt(url, title, crop){
   const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
@@ -267,25 +273,25 @@ const PROFILES = {
   // 🎂 규자보이 (소속사 공식 영상)
   cake: [
     {name:"화보 촬영장의 세계", items:[
-      yt('https://youtu.be/eu4zgFp5DBg', "뀨매력 MAX 이규형 '에스콰이어' 화보 촬영 비하인드", true),
-      yt('https://youtu.be/07fkF0aoA_8', "★입덕 유발 화보 직캠★", true),
-      yt('https://youtu.be/-5yjRcpiyo8', "ARENA 4월호 화보 비하인드", true),
-      yt('https://youtu.be/X2HKQsOJshI', "‘삼식이 삼촌’ 단체 화보 찍으러 왔습니다", true),
+      ytx('https://youtu.be/eu4zgFp5DBg', "뀨매력 MAX 이규형 '에스콰이어' 화보 촬영 비하인드"),
+      ytx('https://youtu.be/07fkF0aoA_8', "★입덕 유발 화보 직캠★"),
+      ytx('https://youtu.be/-5yjRcpiyo8', "ARENA 4월호 화보 비하인드"),
+      ytx('https://youtu.be/X2HKQsOJshI', "‘삼식이 삼촌’ 단체 화보 찍으러 왔습니다"),
     ]},
     {name:"언제나 사랑받는 비하인드", items:[
-      yt('https://youtu.be/ze3LPmP0B-Q', "굿바이 우리 강성민, ‘삼식이 삼촌’ 마지막 현장", true),
-      yt('https://youtu.be/FVKtqRngafs', "'보이스4' 이규형, 동방민 vs 뀨블리", true),
-      yt('https://youtu.be/UoWXIbEapgw', "'하이바이, 마마!' 강화유리네 추억 CAM", true),
-      yt('https://youtu.be/oXc3RodngZo', "tvN '해피니스' 이규형, 광인병 잡으려다 걸린 후기", true),
-      yt('https://youtu.be/sfALKDLIFOc', "'비밀의 숲 2' 에 돌아온 윤과장", true),
-      yt('https://youtu.be/Odu7nsqoQQo', "이번주 로또 번호? 이규형이 알려드립니다", true),
+      ytx('https://youtu.be/ze3LPmP0B-Q', "굿바이 우리 강성민, ‘삼식이 삼촌’ 마지막 현장"),
+      ytx('https://youtu.be/FVKtqRngafs', "'보이스4' 이규형, 동방민 vs 뀨블리"),
+      ytx('https://youtu.be/UoWXIbEapgw', "'하이바이, 마마!' 강화유리네 추억 CAM"),
+      ytx('https://youtu.be/oXc3RodngZo', "tvN '해피니스' 이규형, 광인병 잡으려다 걸린 후기"),
+      ytx('https://youtu.be/sfALKDLIFOc', "'비밀의 숲 2' 에 돌아온 윤과장"),
+      ytx('https://youtu.be/Odu7nsqoQQo', "이번주 로또 번호? 이규형이 알려드립니다"),
     ]},
     {name:"딱 한 편만 보려고 했는데!", items:[
-      yt('https://youtu.be/gihX6VrLkUY', "예쁘다고 소문난 '헤드윅' 이규형", true),
-      yt('https://youtu.be/7sd03a-GswI', "뀨윌이 집필 중인 썸머 러브 스토리", true),
-      yt('https://youtu.be/LIeshwW1HmM', "뮤지컬 '스위니토드' 뀨토드 이규형 비하인드", true),
-      yt('https://youtu.be/mQ1kR_0dmYc', "뀨몬테와 함께 떠나는 뮤지컬 '몬테크리스토' 항해의 시작", true),
-      yt('https://youtu.be/TdmdZ2RNAWI', "뀨해진으로부터 온 이규형 뮤지컬 '팬레터' 리허설 현장", true),
+      ytx('https://youtu.be/gihX6VrLkUY', "예쁘다고 소문난 '헤드윅' 이규형"),
+      ytx('https://youtu.be/7sd03a-GswI', "뀨윌이 집필 중인 썸머 러브 스토리"),
+      ytx('https://youtu.be/LIeshwW1HmM', "뮤지컬 '스위니토드' 뀨토드 이규형 비하인드"),
+      ytx('https://youtu.be/mQ1kR_0dmYc', "뀨몬테와 함께 떠나는 뮤지컬 '몬테크리스토' 항해의 시작"),
+      ytx('https://youtu.be/TdmdZ2RNAWI', "뀨해진으로부터 온 이규형 뮤지컬 '팬레터' 리허설 현장"),
     ]},
   ],
   // 🎁 29일 (작품별 추천)
@@ -375,8 +381,8 @@ $('rows').innerHTML = rowsNow().map((r,ri)=>`
     <div class="rail">
       <button class="arrow l" data-r="${ri}" data-d="-1" aria-label="이전">‹</button>
       <div class="track" id="t${ri}">${r.items.map((v,i)=> r.top
-        ? `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="num">${i+1}</span><span class="poster" style="${art(v,true)}"><span class="t">${v.title}</span></span></button>`
-        : `<button class="card" data-id="${v.id}" style="${art(v)}"><span class="t">${v.title}</span>${r.progress?`<span class="bar" style="width:${r.progress[i]}%"></span>`:''}</button>`).join('')}</div>
+        ? `<button class="card" data-id="${v.id}" style="${art(v)}">${v.ext?'<span class="ytb">YouTube ↗</span>':''}<span class="num">${i+1}</span><span class="poster" style="${art(v,true)}"><span class="t">${v.title}</span></span></button>`
+        : `<button class="card" data-id="${v.id}" style="${art(v)}">${v.ext?'<span class="ytb">YouTube ↗</span>':''}<span class="t">${v.title}</span>${r.progress?`<span class="bar" style="width:${r.progress[i]}%"></span>`:''}</button>`).join('')}</div>
       <button class="arrow r" data-r="${ri}" data-d="1" aria-label="다음">›</button>
     </div>
   </section>`).join('');
@@ -389,7 +395,7 @@ document.addEventListener('click', e=>{
   const ep = e.target.closest('[data-play]'); if(ep){ play(ep.dataset.play); return; }
   const a = e.target.closest('.arrow');
   if(a){ const t=$('t'+a.dataset.r); t.scrollBy({left:a.dataset.d*t.clientWidth*.85,behavior:'smooth'}); return; }
-  const c = e.target.closest('.card'); if(c) openSheet(c.dataset.id);
+  const c = e.target.closest('.card'); if(c){ const v = find(c.dataset.id); if(v && v.ext) openYT(v); else openSheet(c.dataset.id); }
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if(!$('player').classList.contains('hidden')) closePlayer(); else closeSheet(); }
@@ -422,18 +428,18 @@ $('mute').onclick = ()=>{
 let lastFocus = null;
 function openSheet(id){
   const v = find(id); lastFocus = document.activeElement;
-  const media = v.yt
+  const media = v.ext ? '' : v.yt
     ? `<iframe id="cv" class="ytv" src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`
     : v.src ? `<video id="cv" src="${v.src}" class="fv" onplaying="setTimeout(()=>this.classList.add('on'),700)" muted autoplay loop playsinline onerror="this.remove()"></video>` : '';
   const side = [['출연',v.cast],['장르',v.genre],['특징',v.mood]].filter(x=>x[1]).map(x=>`<p><span>${x[0]}: </span>${x[1]}</p>`).join('');
   $('sheet').innerHTML = `
     <div class="cover" style="${art(v)}">
       <div class="media">${media}</div>
-      ${v.yt ? `<button class="tapplay ${matchMedia('(hover:none)').matches?'show':''}" id="tapplay" aria-label="미리보기 재생"><span>▶</span></button>` : ''}
+      ${v.yt && !v.ext ? `<button class="tapplay ${matchMedia('(hover:none)').matches?'show':''}" id="tapplay" aria-label="미리보기 재생"><span>▶</span></button>` : ''}
       <button class="x" id="x" aria-label="닫기">✕</button>
       <div style="width:100%"><h3>${v.title}</h3>
         <div class="row2">
-          <button class="btn play" id="sp">▶ 재생</button>
+          <button class="btn play" id="sp">${v.ext?'▶ 유튜브에서 보기':'▶ 재생'}</button>
           <button class="btn more jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button>
           <button class="btn more" id="lk2" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
           ${media?`<button class="snd" id="snd" aria-label="소리 켜기">🔇</button>`:''}
@@ -499,6 +505,7 @@ $('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeShe
 // player
 function play(id){
   const v = find(id), touch = matchMedia('(hover:none)').matches;
+  if(v.ext){ openYT(v); return; }
   $('pbody').innerHTML = v.yt
     ? `<iframe id="pyt" src="https://www.youtube-nocookie.com/embed/${v.yt}?autoplay=1&mute=${touch?1:0}&playsinline=1&rel=0&enablejsapi=1" title="${v.title}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>${touch?'<button class="unmute" id="unm">▶ 눌러서 재생</button>':''}<a class="ytout" href="https://youtu.be/${v.yt}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`
     : v.src
@@ -543,7 +550,7 @@ function showPop(card){
   const top = Math.max(r.top + scrollY - r.height*.3, scrollY + 70);
   pop.style.cssText = `left:${left}px;top:${top}px;width:${w}px`;
   pop.innerHTML = `
-    <div class="pv"><div class="pvbg" style="${art(v)}"></div>${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" class="ytv" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.35)"></iframe>`:v.src?`<video src="${v.src}" class="fv" onplaying="setTimeout(()=>this.classList.add('on'),700)" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
+    <div class="pv"><div class="pvbg" style="${art(v)}"></div>${v.yt&&!v.ext?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" class="ytv" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.35)"></iframe>`:v.src?`<video src="${v.src}" class="fv" onplaying="setTimeout(()=>this.classList.add('on'),700)" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
     <div class="pb">
       <div class="ic">
         <button class="pl" data-a="play" aria-label="재생">▶</button>
@@ -567,7 +574,7 @@ pop.addEventListener('click', e=>{
   const b = e.target.closest('button'); if(!b || !popFor) return;
   e.stopPropagation();
   const id = popFor;
-  if(b.dataset.a==='play'){ hidePop(); play(id); }
+  if(b.dataset.a==='play'){ hidePop(); const pv = find(id); if(pv.ext) openYT(pv); else play(id); }
   else if(b.dataset.a==='more'){ hidePop(); openSheet(id); }
   else if(b.dataset.a==='like'){ liked.has(id)?liked.delete(id):liked.add(id); b.classList.toggle('on',liked.has(id)); b.textContent=liked.has(id)?'♥':'♡'; }
   else if(b.classList.contains('jj')){ jjim.has(id)?jjim.delete(id):jjim.add(id); document.querySelectorAll(`.jj[data-id="${id}"]`).forEach(x=>{x.classList.toggle('on',jjim.has(id)); x.textContent=jjim.has(id)?'✓':'＋';}); }
