@@ -240,7 +240,13 @@ const EDITS = [
   file('NEON (이혼 앤 이혼)','EDIT 4','','24초','videos/edit4.mp4','thumbs/edit4.jpg'),
   file('(돼...) Gee','EDIT 5','','22초','videos/edit5.mp4','thumbs/edit5.jpg'),
 ];
-const CLIPS = [1,2,3,4,5].map(i=>file('방송 편집 0'+i,'CLIP '+i,'어떤 방송인지 한 줄 설명.','1분',`videos/clip${i}.mp4`,`thumbs/clip${i}.jpg`));
+const CLIPS = [
+  file('pov: 이규형에게 어울리지 않는 배역을 찾아보자','CLIP 1','','1분 5초','videos/clip1.mp4','thumbs/clip1.jpg'),
+  file('뀨랄을 만나는 곳 100m 전','CLIP 2','','53초','videos/clip2.mp4','thumbs/clip2.jpg'),
+  file('나는 날로 몸이 커진다','CLIP 3','','37초','videos/clip3.mp4','thumbs/clip3.jpg'),
+  file('연애세포요?','CLIP 4','','21초','videos/clip4.mp4','thumbs/clip4.jpg'),
+  file('새싹유치원 새싹반 이구영 어린이','CLIP 5','','11초','videos/clip5.mp4','thumbs/clip5.jpg'),
+];
 
 // ── 유튜브: 돌아와요 규형이형
 const BACK = [
@@ -337,6 +343,21 @@ const INFO = {
   '(돼...) Gee': {type:'에딧', age:'15', len:'22초', tags:'먹방 • 아기자기한 • 귀여운 • 유쾌한', year:'2026',
     desc:'니가 돼지냐? 예, 그렇슴다.',
     cast:'이규형', genre:'먹방, 리얼리티 시리즈, 음악 영상', mood:'아기자기한, 귀여운, 리듬감 있는'},
+  'pov: 이규형에게 어울리지 않는 배역을 찾아보자': {type:'시리즈', age:'15', len:'1분 5초', tags:'박진감 넘치는 • 귀여운 • 셀럽', year:'2026',
+    desc:'이규형의 야르 필모 길을 응원합니다',
+    cast:'이규형, 궤도', genre:'리얼리티 시리즈', mood:'박진감 넘치는, 두근두근'},
+  '뀨랄을 만나는 곳 100m 전': {type:'시리즈', age:'12', len:'53초', tags:'통통 튀는 • 리드미컬한 • 뀨랄', year:'2026',
+    desc:'얘, 너 이미 그녀 지나쳤대',
+    cast:'목욕탕집 남자들', genre:'음악 예능', mood:'뀨랄, 통통 튀는, 리드미컬한'},
+  '나는 날로 몸이 커진다': {type:'시리즈', age:'17', len:'37초', tags:'비극적인 • 당혹스러운 • 뀨랄', year:'2026',
+    desc:'어떡해요 . . 죽어가는 폐병 환잔데',
+    cast:'김해진', genre:'리얼리티 시리즈', mood:'유쾌한, 비극적인, 당혹스러운'},
+  '연애세포요?': {type:'시리즈', age:'15', len:'21초', tags:'안타까운 • 비극적인 • 슬픈', year:'2026',
+    desc:'죽으시지 않았어요?',
+    cast:'이규형, 허윤슬', genre:'비극, 리얼리티 시리즈', mood:'안타까운, 비극적인, 슬픈'},
+  '새싹유치원 새싹반 이구영 어린이': {type:'시리즈', age:'ALL', len:'11초', tags:'어린이 • 귀여운 • 아동', year:'2026',
+    desc:'',
+    cast:'이규형, 나잠수, 유재석, 주우재', genre:'아동용 콘텐츠', mood:'귀여운, 희망찬'},
   // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
