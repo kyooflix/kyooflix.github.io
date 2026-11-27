@@ -232,7 +232,13 @@ const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편�
 
 // ── 내 영상 파일들
 const FACE = [1,2,3,4,5].map(i=>file('얼굴 하이라이트 0'+i,'작품 '+i,'작품 이름과 한 줄 설명을 적어주세요.','30초',`videos/face${i}.mp4`,`thumbs/face${i}.jpg`));
-const KYURAL = [1,2,3,4,5].map(i=>file('오늘의 뀨랄 0'+i,'뀨랄 '+i,'어떤 장면인지 한 줄 설명.','20초',`videos/kyural${i}.mp4`,`thumbs/kyural${i}.jpg`));
+const KYURAL = [
+  file('붕어는 회니까','뀨랄 1','','30초','videos/kyural1.mp4','thumbs/kyural1.jpg'),
+  file('왜 까만진 모르겠는데요?','뀨랄 2','','18초','videos/kyural2.mp4','thumbs/kyural2.jpg'),
+  file('저녁 타코 추천','뀨랄 3','','18초','videos/kyural3.mp4','thumbs/kyural3.jpg'),
+  file('불이야(FIRE)','뀨랄 4','','8초','videos/kyural4.mp4','thumbs/kyural4.jpg'),
+  file('나에게 무대란?','뀨랄 5','','12초','videos/kyural5.mp4','thumbs/kyural5.jpg'),
+];
 const EDITS = [
   file('도대체 뭘 먹고 자랐길래 . .','EDIT 1','','30초','videos/edit1.mp4','thumbs/edit1.jpg'),
   file('paw, paw!','EDIT 2','','27초','videos/edit2.mp4','thumbs/edit2.jpg'),
@@ -356,8 +362,23 @@ const INFO = {
     desc:'죽으시지 않았어요?',
     cast:'이규형, 허윤슬', genre:'비극, 리얼리티 시리즈', mood:'안타까운, 비극적인, 슬픈'},
   '새싹유치원 새싹반 이구영 어린이': {type:'시리즈', age:'ALL', len:'11초', tags:'어린이 • 귀여운 • 아동', year:'2026',
-    desc:'',
+    desc:'규형 어린이 참 잘 컸군요',
     cast:'이규형, 나잠수, 유재석, 주우재', genre:'아동용 콘텐츠', mood:'귀여운, 희망찬'},
+  '붕어는 회니까': {type:'시리즈', age:'12', len:'30초', tags:'통통 튀는 • 리드미컬한 • 뀨랄', year:'2024',
+    desc:'어구국구 팔딱팔딱 뛰네 어구구 이게 날거라',
+    cast:'이규형', genre:'리얼리티 시리즈', mood:'뀨랄, 통통 튀는, 리드미컬한'},
+  '왜 까만진 모르겠는데요?': {type:'영화', age:'17', len:'18초', tags:'미스테리한 • 충격적인 • 동물', year:'2024',
+    desc:'흑염소니까?',
+    cast:'이규형, 박지환, 이성민, 이희준', genre:'공포, 코미디', mood:'미스테리한, 충격적인, 공포'},
+  '저녁 타코 추천': {type:'시리즈', age:'12', len:'18초', tags:'재기발랄한 • 포켓몬 • 뀨랄', year:'2022',
+    desc:'피카츄 라이츄 꼬부기',
+    cast:'이규형', genre:'리얼리티 시리즈', mood:'뀨랄, 재기발랄한, 유쾌한'},
+  '불이야(FIRE)': {type:'영화', age:'17', len:'8초', tags:'재난 • 긴박한 • 화재', year:'2022',
+    desc:'아이고 동식아',
+    cast:'이규형, 손호준', genre:'코미디', mood:'긴박한, 유쾌한'},
+  '나에게 무대란?': {type:'다큐멘터리', age:'15', len:'12초', tags:'감동적인 • 진지한 • 서사적인', year:'2015',
+    desc:'살아있음을 느끼게 해주는 그런 곳?',
+    cast:'이규형', genre:'다큐멘터리, 리얼리티 시리즈', mood:'감동적인, 진지한, 서사적인'},
   // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
