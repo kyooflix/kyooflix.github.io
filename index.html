@@ -233,9 +233,9 @@ const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편�
 // ── 내 영상 파일들
 const FACE = [1,2,3,4,5].map(i=>file('얼굴 하이라이트 0'+i,'작품 '+i,'작품 이름과 한 줄 설명을 적어주세요.','30초',`videos/face${i}.mp4`,`thumbs/face${i}.jpg`));
 const KYURAL = [
-  file('저녁 타코 추천','뀨랄 3','','18초','videos/kyural3.mp4','thumbs/kyural3.jpg'),
-  file('약속을 해버렸잖아요','뀨랄 6','','12초','videos/kyural6.mp4','thumbs/kyural6.jpg'),
   file('불이야(FIRE)','뀨랄 4','','8초','videos/kyural4.mp4','thumbs/kyural4.jpg'),
+  file('약속을 해버렸잖아요','뀨랄 6','','12초','videos/kyural6.mp4','thumbs/kyural6.jpg'),
+  file('저녁 타코 추천','뀨랄 3','','18초','videos/kyural3.mp4','thumbs/kyural3.jpg'),
   file('나에게 무대란?','뀨랄 5','','12초','videos/kyural5.mp4','thumbs/kyural5.jpg'),
   file('붕어는 회니까','뀨랄 1','','30초','videos/kyural1.mp4','thumbs/kyural1.jpg'),
   file('왜 까만진 모르겠는데요?','뀨랄 2','','18초','videos/kyural2.mp4','thumbs/kyural2.jpg'),
@@ -266,7 +266,7 @@ const BACK = [
 ];
 
 // ── 오늘의 TOP 7 (모든 프로필 공통, 순서대로 1위~7위)
-const TOP7 = [HERO, CLIPS[2], BACK[0], FACE[1], EDITS[0], CLIPS[4], KYURAL[0]];  // 7위 = 저녁 타코 추천
+const TOP7 = [HERO, CLIPS[2], BACK[0], FACE[1], EDITS[0], CLIPS[4], KYURAL.find(v=>v.title==='저녁 타코 추천')];  // 7위는 제목으로 고정 (뀨랄 순서를 바꿔도 그대로)
 
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
