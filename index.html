@@ -118,6 +118,7 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 #player iframe{width:min(100%,calc(100vh*16/9));height:auto;aspect-ratio:16/9;border:0}
   .sheet .cover>div:not(.media){pointer-events:none}.sheet .cover .row2>*{pointer-events:auto}
   .sheet .cover>.tapplay{position:absolute;inset:0;z-index:1;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer}
+.sheet .cover>.tapplay:not(.show){opacity:0;pointer-events:none}.sheet .cover>.tapplay{transition:opacity .3s}
 .tapplay span{width:64px;height:64px;border-radius:50%;background:#000a;border:2px solid #ffffffcc;display:grid;place-items:center;font-size:24px;padding-left:4px}
 #player .unmute{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:2;min-height:44px;padding:10px 20px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;box-shadow:0 6px 20px #0008}
 #player .ytout{position:absolute;top:16px;right:16px;z-index:2;min-height:44px;display:inline-flex;align-items:center;padding:8px 16px;border-radius:6px;background:#ffffff22;color:var(--ink);text-decoration:none;font-size:14px}
@@ -131,8 +132,6 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 #pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px;overflow:hidden}
 .ytv{opacity:0;transition:opacity .6s}.ytv.on{opacity:1}
 #pop .pvbg{position:absolute;inset:0;transform-origin:center}
-#pop .pvbg.kb{animation:kb 10s ease-out forwards}
-@keyframes kb{to{transform:scale(1.12) translateY(-2%)}}
 #pop .pv video{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);object-fit:cover}
 .fv{opacity:0;transition:opacity .6s ease}.fv.on{opacity:1}
 #pop .pv b{position:relative;font-size:17px;text-shadow:0 1px 8px #000c}
@@ -430,7 +429,7 @@ function openSheet(id){
   $('sheet').innerHTML = `
     <div class="cover" style="${art(v)}">
       <div class="media">${media}</div>
-      ${v.yt && matchMedia('(hover:none)').matches ? '<button class="tapplay" id="tapplay" aria-label="미리보기 재생"><span>▶</span></button>' : ''}
+      ${v.yt ? `<button class="tapplay ${matchMedia('(hover:none)').matches?'show':''}" id="tapplay" aria-label="미리보기 재생"><span>▶</span></button>` : ''}
       <button class="x" id="x" aria-label="닫기">✕</button>
       <div style="width:100%"><h3>${v.title}</h3>
         <div class="row2">
@@ -454,6 +453,7 @@ function openSheet(id){
   if(tp && cvf){
     tp.onclick = ()=>{ ytCmd(cvf,'unMute'); ytCmd(cvf,'playVideo'); cvf.dataset.m='0'; cvf.classList.add('on'); tp.remove(); if($('snd')) $('snd').textContent='🔊'; };
     cvf.addEventListener('ytplaying', ()=>{ if(tp.isConnected) tp.remove(); });
+    setTimeout(()=>{ if(tp.isConnected) tp.classList.add('show'); }, 1500);
   }
   const hv = $('heroVid'); if(hv) hv.pause();
   $('x').onclick = closeSheet; $('sp').onclick = ()=>{ stopCover(); play(id); }; $('x').focus();
@@ -555,8 +555,6 @@ function showPop(card){
       ${v.tags?`<p class="ds">${v.tags}</p>`:''}
     </div>`;
   popFor = v.id; pop.classList.remove('hidden');
-  const myId = v.id;
-  setTimeout(()=>{ if(popFor!==myId) return; const f = pop.querySelector('iframe.ytv'), bg = pop.querySelector('.pvbg'); if(f && !f.classList.contains('on') && bg) bg.classList.add('kb'); }, 2200);
   revealYT(pop);
 }
 document.addEventListener('mouseover', e=>{
