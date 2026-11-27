@@ -130,6 +130,9 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 @keyframes popin{from{opacity:0;transform:scale(.88)}}
 #pop .pv{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:12px 14px;overflow:hidden}
 .ytv{opacity:0;transition:opacity .6s}.ytv.on{opacity:1}
+#pop .pvbg{position:absolute;inset:0;transform-origin:center}
+#pop .pvbg.kb{animation:kb 10s ease-out forwards}
+@keyframes kb{to{transform:scale(1.12) translateY(-2%)}}
 #pop .pv video{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);object-fit:cover}
 .fv{opacity:0;transition:opacity .6s ease}.fv.on{opacity:1}
 #pop .pv b{position:relative;font-size:17px;text-shadow:0 1px 8px #000c}
@@ -207,11 +210,11 @@ const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
 function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
 const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`;
-// frame을 true로 주면 유튜브가 영상 중간에서 자동으로 뽑은 장면을 썸네일로 써요 (글자·테두리 없는 화면)
-function yt(url, title, frame){
+// 세 번째에 true를 주면 원래 썸네일을 살짝 확대해서 가장자리 테두리를 잘라내요
+function yt(url, title, crop){
   const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
   const y = m ? m[1] : '';
-  return {id:'v'+(n++), title, ep:'YouTube', desc:'', len:'', yt:y, thumb: y?`https://i.ytimg.com/vi/${y}/${frame?'hq2':'hqdefault'}.jpg`:'', hue:hues[n%hues.length]};
+  return {id:'v'+(n++), title, ep:'YouTube', desc:'', len:'', yt:y, thumb: y?`https://i.ytimg.com/vi/${y}/hqdefault.jpg`:'', crop:!!crop, hue:hues[n%hues.length]};
 }
 // ============================================================
 //  여기만 고치면 돼요 ✏️
@@ -344,7 +347,7 @@ const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
 const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
 const find = id => ALL().find(v=>v.id===id);
 ALL().forEach(v=>Object.assign(v, INFO[v.title]||{}));
-const art = (v, poster) => `background:${v.thumb?`url('${v.thumb}') center/${v.yt&&poster?'auto 134%':'cover'} no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
+const art = (v, poster) => `background:${v.thumb?`url('${v.thumb}') center/${v.yt&&poster?(v.crop?'auto 152%':'auto 134%'):(v.crop?'116% auto':'cover')} no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
 const $ = id => document.getElementById(id);
 const jjim = new Set();
 const rowOf = v => rowsNow().find(r=>!r.top && !r.progress && r.items.includes(v));
@@ -540,7 +543,7 @@ function showPop(card){
   const top = Math.max(r.top + scrollY - r.height*.3, scrollY + 70);
   pop.style.cssText = `left:${left}px;top:${top}px;width:${w}px`;
   pop.innerHTML = `
-    <div class="pv" style="${art(v)}">${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" class="ytv" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.35)"></iframe>`:v.src?`<video src="${v.src}" class="fv" onplaying="setTimeout(()=>this.classList.add('on'),700)" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
+    <div class="pv"><div class="pvbg" style="${art(v)}"></div>${v.yt?`<iframe src="${ytSrc(v.yt,1)}" allow="autoplay; encrypted-media" tabindex="-1" title="" class="ytv" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.35)"></iframe>`:v.src?`<video src="${v.src}" class="fv" onplaying="setTimeout(()=>this.classList.add('on'),700)" muted autoplay loop playsinline onerror="this.remove()"></video>`:''}<b>${v.title}</b></div>
     <div class="pb">
       <div class="ic">
         <button class="pl" data-a="play" aria-label="재생">▶</button>
@@ -552,6 +555,8 @@ function showPop(card){
       ${v.tags?`<p class="ds">${v.tags}</p>`:''}
     </div>`;
   popFor = v.id; pop.classList.remove('hidden');
+  const myId = v.id;
+  setTimeout(()=>{ if(popFor!==myId) return; const f = pop.querySelector('iframe.ytv'), bg = pop.querySelector('.pvbg'); if(f && !f.classList.contains('on') && bg) bg.classList.add('kb'); }, 2200);
   revealYT(pop);
 }
 document.addEventListener('mouseover', e=>{
