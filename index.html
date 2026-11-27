@@ -207,10 +207,11 @@ const hues = [18,210,38,265,170,25,195,45,230,12];
 let n = 0;
 function file(title, ep, desc, len, src, thumb){ return {id:'v'+(n++), title, ep, desc, len, src, thumb, hue:hues[n%hues.length]}; }
 const ytSrc = (id, mute) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`;
-function yt(url, title){
+// frame을 true로 주면 유튜브가 영상 중간에서 자동으로 뽑은 장면을 썸네일로 써요 (글자·테두리 없는 화면)
+function yt(url, title, frame){
   const m = String(url).match(/(?:youtu\.be\/|v=|shorts\/|embed\/|live\/)([\w-]{11})/);
   const y = m ? m[1] : '';
-  return {id:'v'+(n++), title, ep:'YouTube', desc:'', len:'', yt:y, thumb: y?`https://i.ytimg.com/vi/${y}/hqdefault.jpg`:'', hue:hues[n%hues.length]};
+  return {id:'v'+(n++), title, ep:'YouTube', desc:'', len:'', yt:y, thumb: y?`https://i.ytimg.com/vi/${y}/${frame?'hq2':'hqdefault'}.jpg`:'', hue:hues[n%hues.length]};
 }
 // ============================================================
 //  여기만 고치면 돼요 ✏️
@@ -264,25 +265,25 @@ const PROFILES = {
   // 🎂 규자보이 (소속사 공식 영상)
   cake: [
     {name:"화보 촬영장의 세계", items:[
-      yt('https://youtu.be/eu4zgFp5DBg', "뀨매력 MAX 이규형 '에스콰이어' 화보 촬영 비하인드"),
-      yt('https://youtu.be/07fkF0aoA_8', "★입덕 유발 화보 직캠★"),
-      yt('https://youtu.be/-5yjRcpiyo8', "ARENA 4월호 화보 비하인드"),
-      yt('https://youtu.be/X2HKQsOJshI', "‘삼식이 삼촌’ 단체 화보 찍으러 왔습니다"),
+      yt('https://youtu.be/eu4zgFp5DBg', "뀨매력 MAX 이규형 '에스콰이어' 화보 촬영 비하인드", true),
+      yt('https://youtu.be/07fkF0aoA_8', "★입덕 유발 화보 직캠★", true),
+      yt('https://youtu.be/-5yjRcpiyo8', "ARENA 4월호 화보 비하인드", true),
+      yt('https://youtu.be/X2HKQsOJshI', "‘삼식이 삼촌’ 단체 화보 찍으러 왔습니다", true),
     ]},
     {name:"언제나 사랑받는 비하인드", items:[
-      yt('https://youtu.be/ze3LPmP0B-Q', "굿바이 우리 강성민, ‘삼식이 삼촌’ 마지막 현장"),
-      yt('https://youtu.be/FVKtqRngafs', "'보이스4' 이규형, 동방민 vs 뀨블리"),
-      yt('https://youtu.be/UoWXIbEapgw', "'하이바이, 마마!' 강화유리네 추억 CAM"),
-      yt('https://youtu.be/oXc3RodngZo', "tvN '해피니스' 이규형, 광인병 잡으려다 걸린 후기"),
-      yt('https://youtu.be/sfALKDLIFOc', "'비밀의 숲 2' 에 돌아온 윤과장"),
-      yt('https://youtu.be/Odu7nsqoQQo', "이번주 로또 번호? 이규형이 알려드립니다"),
+      yt('https://youtu.be/ze3LPmP0B-Q', "굿바이 우리 강성민, ‘삼식이 삼촌’ 마지막 현장", true),
+      yt('https://youtu.be/FVKtqRngafs', "'보이스4' 이규형, 동방민 vs 뀨블리", true),
+      yt('https://youtu.be/UoWXIbEapgw', "'하이바이, 마마!' 강화유리네 추억 CAM", true),
+      yt('https://youtu.be/oXc3RodngZo', "tvN '해피니스' 이규형, 광인병 잡으려다 걸린 후기", true),
+      yt('https://youtu.be/sfALKDLIFOc', "'비밀의 숲 2' 에 돌아온 윤과장", true),
+      yt('https://youtu.be/Odu7nsqoQQo', "이번주 로또 번호? 이규형이 알려드립니다", true),
     ]},
     {name:"딱 한 편만 보려고 했는데!", items:[
-      yt('https://youtu.be/gihX6VrLkUY', "예쁘다고 소문난 '헤드윅' 이규형"),
-      yt('https://youtu.be/7sd03a-GswI', "뀨윌이 집필 중인 썸머 러브 스토리"),
-      yt('https://youtu.be/LIeshwW1HmM', "뮤지컬 '스위니토드' 뀨토드 이규형 비하인드"),
-      yt('https://youtu.be/mQ1kR_0dmYc', "뀨몬테와 함께 떠나는 뮤지컬 '몬테크리스토' 항해의 시작"),
-      yt('https://youtu.be/TdmdZ2RNAWI', "뀨해진으로부터 온 이규형 뮤지컬 '팬레터' 리허설 현장"),
+      yt('https://youtu.be/gihX6VrLkUY', "예쁘다고 소문난 '헤드윅' 이규형", true),
+      yt('https://youtu.be/7sd03a-GswI', "뀨윌이 집필 중인 썸머 러브 스토리", true),
+      yt('https://youtu.be/LIeshwW1HmM', "뮤지컬 '스위니토드' 뀨토드 이규형 비하인드", true),
+      yt('https://youtu.be/mQ1kR_0dmYc', "뀨몬테와 함께 떠나는 뮤지컬 '몬테크리스토' 항해의 시작", true),
+      yt('https://youtu.be/TdmdZ2RNAWI', "뀨해진으로부터 온 이규형 뮤지컬 '팬레터' 리허설 현장", true),
     ]},
   ],
   // 🎁 29일 (작품별 추천)
