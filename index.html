@@ -258,15 +258,15 @@ const BACK = [
   yt('https://youtu.be/Z98wU0hFkNA','희노애락 런던'),
 ];
 
-// ── 오늘의 TOP 5 (모든 프로필 공통, 순서대로 1위~5위)
-const TOP5 = [HERO, KYURAL[0], BACK[0], FACE[1], EDITS[0]];
+// ── 오늘의 TOP 7 (모든 프로필 공통, 순서대로 1위~7위)
+const TOP7 = [HERO, CLIPS[2], BACK[0], FACE[1], EDITS[0], CLIPS[4], KYURAL[0]];
 
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
   // 🐈‍⬛ 뀨
   kyoo: [
     {name:'이어서 시청하기', items:[FACE[0],KYURAL[1],EDITS[2],FACE[3]], progress:[62,30,80,45]},
-    {name:'오늘의 TOP 5', top:true, items:TOP5},
+    {name:'오늘의 TOP 7', top:true, items:TOP7},
     {name:'이규형 얼굴 하이라이트', items:FACE},
     {name:'회원님을 위해 엄선한 오늘의 뀨랄', items:KYURAL},
     {name:'돌아와요 규형이형', items:BACK},
@@ -362,12 +362,12 @@ const INFO = {
 };
 // ============================================================
 let PROFILE = 'kyoo';
-// 이어보기·TOP 5가 없는 프로필은 그 프로필 영상으로 자동으로 채워줌
+// 이어보기·TOP 7이 없는 프로필은 이어보기는 그 프로필 영상으로, TOP 7은 공통으로 채워줌
 const autoRows = rows => {
   if(rows.some(r=>r.top)) return rows;
   const pool = []; const max = Math.max(0, ...rows.map(r=>r.items.length));
   for(let i=0;i<max;i++) rows.forEach(r=>{ if(r.items[i]) pool.push(r.items[i]); });
-  return [{name:'이어서 시청하기', items:pool.slice(0,4), progress:[62,30,80,45]}, {name:'오늘의 TOP 5', top:true, items:TOP5}, ...rows];
+  return [{name:'이어서 시청하기', items:pool.slice(0,4), progress:[62,30,80,45]}, {name:'오늘의 TOP 7', top:true, items:TOP7}, ...rows];
 };
 const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
 const ALL = () => [HERO, ...Object.values(PROFILES).flat().flatMap(r=>r.items)];
