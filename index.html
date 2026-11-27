@@ -556,7 +556,7 @@ function showPop(card){
         <button class="pl" data-a="play" aria-label="재생">▶</button>
         <button class="jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button>
         <button class="lk ${liked.has(v.id)?'on':''}" data-a="like" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
-        <button class="mo" data-a="more" aria-label="상세 정보">⌄</button>
+        <button class="mo" data-a="more" aria-label="상세 정보"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></button>
       </div>
       <div class="mt"><span>${v.type||'생일 특집'}</span>${rate(v.age)}${v.len?`<span>${v.len}</span>`:''}<span class="ag">HD</span></div>
       ${v.tags?`<p class="ds">${v.tags}</p>`:''}
