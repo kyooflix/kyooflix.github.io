@@ -231,7 +231,13 @@ function yt(url, title, crop){
 const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편성 메인 영상.','1분','videos/main.mp4','thumbs/main.jpg');
 
 // ── 내 영상 파일들
-const FACE = [1,2,3,4,5].map(i=>file('얼굴 하이라이트 0'+i,'작품 '+i,'작품 이름과 한 줄 설명을 적어주세요.','30초',`videos/face${i}.mp4`,`thumbs/face${i}.jpg`));
+const FACE = [
+  file('조강화','작품 1','','35초','videos/face1.mp4','thumbs/face1.jpg'),
+  file('이승영','작품 2','','11초','videos/face2.mp4','thumbs/face2.jpg'),
+  file('동방민','작품 3','','22초','videos/face3.mp4','thumbs/face3.jpg'),
+  file('좌시백','작품 4','','11초','videos/face4.mp4','thumbs/face4.jpg'),
+  file('김해진','작품 5','','13초','videos/face5.mp4','thumbs/face5.jpg'),
+];
 const KYURAL = [
   file('불이야(FIRE)','뀨랄 4','','8초','videos/kyural4.mp4','thumbs/kyural4.jpg'),
   file('약속을 해버렸잖아요','뀨랄 6','','12초','videos/kyural6.mp4','thumbs/kyural6.jpg'),
@@ -266,13 +272,13 @@ const BACK = [
 ];
 
 // ── 오늘의 TOP 7 (모든 프로필 공통, 순서대로 1위~7위)
-const TOP7 = [HERO, CLIPS[2], BACK[0], FACE[1], EDITS[0], CLIPS[4], KYURAL.find(v=>v.title==='저녁 타코 추천')];  // 7위는 제목으로 고정 (뀨랄 순서를 바꿔도 그대로)
+const TOP7 = [HERO, CLIPS[2], BACK[0], FACE.find(v=>v.title==='이승영'), EDITS[0], CLIPS[4], KYURAL.find(v=>v.title==='저녁 타코 추천')];  // 7위는 제목으로 고정 (뀨랄 순서를 바꿔도 그대로)
 
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
   // 🐈‍⬛ 뀨
   kyoo: [
-    {name:'이어서 시청하기', items:[FACE[0],KYURAL.find(v=>v.title==='나에게 무대란?'),EDITS[2],FACE[3]], progress:[62,30,80,45]},
+    {name:'이어서 시청하기', items:[FACE.find(v=>v.title==='조강화'),KYURAL.find(v=>v.title==='나에게 무대란?'),EDITS[2],FACE.find(v=>v.title==='좌시백')], progress:[62,30,80,45]},
     {name:'오늘의 TOP 7', top:true, items:TOP7},
     {name:'이규형 얼굴 하이라이트', items:FACE},
     {name:'회원님을 위해 엄선한 오늘의 뀨랄', items:KYURAL},
@@ -383,6 +389,21 @@ const INFO = {
   '약속을 해버렸잖아요': {type:'예능', age:'15', len:'12초', tags:'익살스러운 • 귀여운 • 능청스러운', year:'2021',
     desc:'사주 중독자',
     cast:'이규형', genre:'리얼리티 시리즈', mood:'익살스러운, 귀여운, 능청스러운'},
+  '조강화': {type:'시리즈', age:'15', len:'35초', tags:'비극적인 • 가슴 찢어지는 • 슬픈', year:'2020',
+    desc:'우리 엄만 매일 내게 말했어 우는 게 예쁜 남자를 조심하거라 . .',
+    cast:'이규형', genre:'드라마', mood:'비극적인, 가슴 찢어지는, 슬픈'},
+  '이승영': {type:'시리즈', age:'19', len:'11초', tags:'자해 • 슬픈 • 비극적인', year:'2021',
+    desc:'느껴',
+    cast:'이규형', genre:'드라마', mood:'잔인한, 슬픈, 비극적인'},
+  '동방민': {type:'시리즈', age:'19', len:'22초', tags:'잔인한 • 공포 • 유혈', year:'2021',
+    desc:'동방민은 어떻게 이름도 동방미인',
+    cast:'이규형', genre:'드라마', mood:'잔인한, 공포, 유혈'},
+  '좌시백': {type:'시리즈', age:'17', len:'11초', tags:'두근두근 • 로맨스 • 설레는', year:'2022',
+    desc:'비 오는 날 차 안에서 어색하게 눈 마주치는 거, 그거.',
+    cast:'이규형, 정려원', genre:'드라마', mood:'설레는, 로맨스, 아찔한'},
+  '김해진': {type:'시리즈', age:'12', len:'13초', tags:'따스한 • 아름다운 • 셀럽', year:'2026',
+    desc:'이날 얼굴 뭐였지?',
+    cast:'이규형', genre:'뮤지컬', mood:'따스한, 아름다운, 밝은'},
   // 형식: '카드 제목': {type:'종류', age:'ALL/12/15/19', len:'길이', tags:'태그 • 태그', year:'연도', desc:'설명', cast:'출연', genre:'장르', mood:'특징'},
 };
 // ============================================================
