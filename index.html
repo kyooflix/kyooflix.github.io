@@ -38,11 +38,11 @@ header.solid{background:rgba(11,10,12,.97)}
 .brand{font:400 34px/1 "Bebas Neue",sans-serif;letter-spacing:.02em;color:var(--rose);flex:none}.brand span{color:var(--ink)}
 nav{display:flex;gap:18px;font-size:14px;color:var(--soft);overflow-x:auto;scrollbar-width:none}
 nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(--ink);font-weight:700}
-.swap{margin-left:auto;display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border:1.5px solid #f2c14e;border-radius:999px;background:#f2c14e1f;color:#f2c14e;font:inherit;font-size:13px;font-weight:700;cursor:pointer;flex:none;animation:swpulse 2s ease-out 1.2s 4;transition:background .2s}
-.swap:hover{background:#f2c14e3d}.swap .chev{animation:swbob 1.4s ease-in-out infinite}
-@keyframes swpulse{0%{box-shadow:0 0 0 0 #f2c14eaa}100%{box-shadow:0 0 0 12px #f2c14e00}}
+.swap{margin-left:auto;display:flex;align-items:center;gap:6px;padding:0;border:0;background:none;color:#f2c14e;cursor:pointer;flex:none}
+.swap .me{animation:swpulse 2s ease-out 1.2s 4}
+.swap:hover .me{filter:brightness(1.12)}.swap .chev{animation:swbob 1.4s ease-in-out infinite}
+@keyframes swpulse{0%{box-shadow:0 0 0 0 #f2c14eaa}100%{box-shadow:0 0 0 10px #f2c14e00}}
 @keyframes swbob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
-@media(max-width:600px){.swap{padding:3px 9px 3px 3px;gap:6px;font-size:12px}}
 .me{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--rose),var(--gold));flex:none}
 
 /* hero */
@@ -54,7 +54,7 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,var(--bg)),linear-gradient(90deg,rgba(11,10,12,.85),transparent 60%);pointer-events:none}
 .hero .info{position:relative;z-index:1;max-width:560px}
 .tag{display:inline-flex;gap:8px;align-items:center;font-size:14px;color:var(--gold);font-weight:700;margin-bottom:10px}
-.hero h1{letter-spacing:-.03em;font:900 clamp(36px,7vw,64px)/1.05 "Noto Sans KR",sans-serif;margin:0 0 12px;text-wrap:balance}
+.hero h1{letter-spacing:-.03em;font:900 clamp(36px,7vw,64px)/1.22 "Noto Sans KR",sans-serif;margin:0 0 12px;text-wrap:balance}
 .hero p{margin:0 0 20px;color:#e6d6d0;max-width:46ch}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
 .btn{min-height:44px;padding:10px 22px;border-radius:6px;border:0;font-weight:700;display:inline-flex;align-items:center;gap:8px}
@@ -154,6 +154,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 .rt{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 5px;border-radius:4px;font:900 12px/1 'Noto Sans KR',sans-serif;color:#111}
 .rALL{background:#3fbf6f}.r12{background:#f2c14e}.r15{background:#f08a3c}.r17{background:#e8673a}.r19{background:#e0453a;color:#fff}
 .sheet .meta{align-items:center}
+.sheet .credit{font-size:13px;color:var(--soft);margin:4px 0 0}
 .sheet .desc{font-size:16px;line-height:1.7;margin:12px 0 0;overflow-wrap:anywhere}
 @media (hover:none){#pop{display:none!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
@@ -183,7 +184,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 <header id="top">
   <div class="brand">KYOO<span>FLIX</span></div>
   <nav><a class="on" href="#">홈</a><a href="#">시리즈</a><a href="#">필모그래피</a><a href="#">비하인드</a><a href="#">내가 찜한 영상</a></nav>
-  <button class="swap" aria-label="프로필 바꾸기"><span class="me"></span><span class="swtx">프로필 변경</span><svg class="chev" viewBox="0 0 24 24" width="16" height="16"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="swap" aria-label="프로필 바꾸기"><span class="me"></span><svg class="chev" viewBox="0 0 24 24" width="22" height="22"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </header>
 
 <section class="hero">
@@ -234,6 +235,7 @@ function yt(url, title, crop){
 
 // ── 공통 메인 영상 (모든 프로필 맨 위)
 const HERO = file('Happy Birthday, 이규형','메인','11월 29일 특별 편성 메인 영상.','1분 27초','videos/main.mp4','thumbs/main.jpg');
+HERO.credit = 'Gen Hoshino - Suki';
 
 // ── 내 영상 파일들
 const FACE = [
@@ -501,6 +503,7 @@ document.querySelectorAll('.prof i[data-s]').forEach(i=>{ i.innerHTML = sprite(S
 document.querySelectorAll('.prof').forEach(b=>b.addEventListener('click',()=>{
   const me=document.querySelector('.me'); me.style.background=b.dataset.c; me.innerHTML=b.querySelector('i').innerHTML;
   PROFILE = b.querySelector('i').dataset.s; renderRows(); scrollTo(0,0);
+  const hv=$('heroVid'); if(hv){ try{ hv.currentTime=0; }catch(e){} hv.play().catch(()=>{}); }
   $('who').classList.add('hidden');
 }));
 document.querySelector('.swap').addEventListener('click',()=>{ $('who').style.animation='none'; $('who').classList.remove('hidden'); });
@@ -580,7 +583,7 @@ function openSheet(id){
     <div class="body"><div class="two">
       <div>
         <div class="meta"><span>${v.year||'2026'}</span>${v.len?`<span>${v.len}</span>`:''}<span class="age" style="padding:0 6px;border:1px solid #ffffff55;background:none">HD</span>${rate(v.age)}</div>
-        ${v.desc?`<p class="desc">${v.desc}</p>`:''}
+        ${v.desc?`<p class="desc">${v.desc}</p>`:''}${v.credit?`<p class="credit">${v.credit}</p>`:''}
       </div>
       <div class="side">${side}</div>
     </div></div>`;
