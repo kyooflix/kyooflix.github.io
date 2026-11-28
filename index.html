@@ -287,7 +287,7 @@ const BACK = [
 ];
 
 // ── 오늘의 TOP 7 (모든 프로필 공통, 순서대로 1위~7위)
-const TOP7 = [HERO, CLIPS[2], BACK[0], EDITS[0], FACE.find(v=>v.title==='이승영 얼굴'), CLIPS[4], KYURAL.find(v=>v.title==='저녁 타코 추천')];  // 7위는 제목으로 고정 (뀨랄 순서를 바꿔도 그대로)
+const TOP7 = [HERO, null, BACK[0], EDITS[0], FACE.find(v=>v.title==='이승영 얼굴'), CLIPS[4], KYURAL.find(v=>v.title==='저녁 타코 추천')];  // 7위는 제목으로 고정 (뀨랄 순서를 바꿔도 그대로)
 
 // ── 290 · 체포하겠어(과)와 비슷한 콘텐츠
 const CATCH = [
@@ -297,6 +297,7 @@ const CATCH = [
   file('보이스4','CATCH 3','','53초','videos/catch3.mp4','thumbs/catch3.jpg'),
   file('변론을 시작하겠습니다','CATCH 4','','1분 3초','videos/catch4.mp4','thumbs/catch4.jpg'),
 ];
+TOP7[1] = CATCH.find(v=>v.title==='카지노');
 
 // ── 프로필별 홈 화면 (줄 이름과 영상 목록)
 const PROFILES = {
@@ -488,6 +489,7 @@ const autoRows = rows => {
   if(rows.some(r=>r.top)) return rows;
   const pool = []; const max = Math.max(0, ...rows.map(r=>r.items.length));
   for(let i=0;i<max;i++) rows.forEach(r=>{ const v=r.items[i]; if(v && (v.src||v.yt)) pool.push(v); });  // 아직 비어 있는 칸은 이어보기에 안 넣음
+  if(PROFILE==='gift'){ const g=CATCH.find(v=>v.title==='선물 줄게'); const k=pool.indexOf(g); if(k>-1) pool.splice(k,1); pool.splice(1,0,g); }
   return [{name:'이어서 시청하기', items:pool.slice(0,4), progress:[62,30,80,45]}, {name:'오늘의 TOP 7', top:true, items:TOP7}, ...rows];
 };
 const rowsNow = () => autoRows(PROFILES[PROFILE] || []);
