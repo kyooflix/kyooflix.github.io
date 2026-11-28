@@ -40,6 +40,7 @@ nav{display:flex;gap:18px;font-size:14px;color:var(--soft);overflow-x:auto;scrol
 nav .sm{display:none}@media(max-width:600px){nav .lg{display:none}nav .sm{display:inline}}
 .jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;padding:6px max(4vw,16px) 12px}
 .jgrid .card{width:auto}
+.jnote{padding:4px max(4vw,16px) 0;margin:0;font-size:12px;color:#fff}
 .jempty{padding:8px max(4vw,16px);color:var(--soft);line-height:1.7}
 body.jv .hero{display:none}body.jv .rows{margin-top:0;padding-top:96px}
 nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(--ink);font-weight:700}
@@ -535,7 +536,7 @@ if(VIEW==='jjim'){
   const seen=new Set(), list=ALL().filter(v=>jjim.has(v.id) && !seen.has(v.title) && seen.add(v.title));
   $('rows').innerHTML = `<section class="row"><h2>내가 찜한 영상</h2>${list.length
     ? `<div class="jgrid">${list.map(v=>`<button class="card" data-id="${v.id}" style="${art(v)}">${v.ext?'<span class="ytb">YouTube ↗</span>':''}<span class="t">${v.title}</span></button>`).join('')}</div>`
-    : `<p class="jempty">아직 찜한 영상이 없어요.<br>마음에 드는 영상의 <b>＋</b> 버튼을 눌러 담아보세요!</p>`}</section>`;
+    : `<p class="jempty">아직 찜한 영상이 없어요.<br>마음에 드는 영상의 <b>＋</b> 버튼을 눌러 담아보세요!</p>`}<p class="jnote">해당 찜 목록은 다른 사용자에게 공개되지 않습니다.</p></section>`;
   return;
 }
 $('rows').innerHTML = rowsNow().map((r,ri)=>`
