@@ -324,13 +324,28 @@ const PROFILES = {
   // 🎁 29일 (작품별 추천)
   gift: [
     {name:'정세훈(님)이 찜한 리스트', items:[ file('아무도 모른다','JJIM 1','','15초','videos/jjim1.mp4','thumbs/jjim1.jpg'), file('눈물이 나','JJIM 5','','24초','videos/jjim5.mp4','thumbs/jjim5.jpg'), file('MUSE','JJIM 2','','22초','videos/jjim2.mp4','thumbs/jjim2.jpg'), file('MUSE +','JJIM 3','','42초','videos/jjim3.mp4','thumbs/jjim3.jpg'), file('해진의 편지','JJIM 4','','24초','videos/jjim4.mp4','thumbs/jjim4.jpg') ]},
-    {name:'노착희 추천! 좌시백 관찰 일지', items:[ yt('','영상 01'), yt('','영상 02'), yt('','영상 03'), yt('','영상 04') ]},
+    {name:'노착희 추천! 좌시백 관찰 일지', items:[ file('왜 날 좋아하지 않는 건데 왜?!','OBS 1','','35초','videos/obs1.mp4','thumbs/obs1.jpg'), file('웁니까?','OBS 2','','1분 50초','videos/obs2.mp4','thumbs/obs2.jpg'), file('여기서 멉니다, 아주','OBS 3','','1분 15초','videos/obs3.mp4','thumbs/obs3.jpg'), file('정말, 아무것도','OBS 4','','1분 5초','videos/obs4.mp4','thumbs/obs4.jpg'), file('왜 맨날 괜찮습니까','OBS 5','','1분 5초','videos/obs5.mp4','thumbs/obs5.jpg'), file('모발의 밀집도','OBS 6','','1분 22초','videos/obs6.mp4','thumbs/obs6.jpg'), file('그 국선 변호사의 플러팅 방법','OBS 7','','56초','videos/obs7.mp4','thumbs/obs7.jpg') ]},
     {name:'체포하겠어(과)와 비슷한 콘텐츠', items:CATCH},
   ],
 };
 
 // ── 상세 정보 (카드 제목을 그대로 쓰고, 넣고 싶은 항목만 채우면 돼요. 없는 항목은 화면에 안 나와요)
 const INFO = {
+  '그 국선 변호사의 플러팅 방법': {type:'시리즈', age:'15', len:'56초', tags:'두근두근 • 박력 넘치는 • 로맨스', year:'2022',
+    desc:'얘, 너 그거 사랑이야',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'두근두근, 설레는, 박력 넘치는'},
+  '모발의 밀집도': {type:'시리즈', age:'15', len:'1분 22초', tags:'유쾌한 • 두근두근 • 로맨스', year:'2022',
+    desc:'뒷부분은 심장이 너무 아파서 편집자가 먹었습니다',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'유쾌한, 설레는, 두근두근'},
+  '왜 맨날 괜찮습니까': {type:'시리즈', age:'17', len:'1분 5초', tags:'위로 • 따스한 • 로맨스', year:'2022',
+    desc:'좌시백 유죄',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'위로하는, 따스한, 안타까운'},
+  '정말, 아무것도': {type:'시리즈', age:'19', len:'1분 5초', tags:'아찔한 • 긴장감 넘치는 • 로맨스', year:'2022',
+    desc:'PAJAMAS',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'설레는, 아찔한, 긴장감 넘치는'},
+  '여기서 멉니다, 아주': {type:'시리즈', age:'17', len:'1분 15초', tags:'설레는 • 두근두근한 • 로맨스', year:'2022',
+    desc:'좌시백 씨는 집이 어디예요?',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'설레는, 두근두근한, 아찔한'},
   '육교 뛰어올라가기': {type:'다큐멘터리', age:'ALL', len:'32초', tags:'웃긴 • 생생한', year:'2013',
     desc:'왜 이러는 걸까요. MGM GRAND HOTEL 앞 육교. 라스베가스 떠나는 날 아침 6시.',
     cast:'이규형', genre:'다큐멘터리, 일상', mood:'웃긴, 생생한'},
@@ -436,6 +451,12 @@ const INFO = {
   '눈물이 나': {type:'뮤지컬', age:'15', len:'24초', tags:'따스한 • 설레는 • 빛나는', year:'2026',
     desc:'팬레터 공연 하이라이트 영상 (10주년 기념 앵콜 공연ver)',
     cast:'이규형, 문태유, 소정화', genre:'뮤지컬', mood:'따스한, 설레는, 빛나는'},
+  '왜 날 좋아하지 않는 건데 왜?!': {type:'시리즈', age:'15', len:'35초', tags:'두근두근 • 박력 넘치는 • 로맨스', year:'2022',
+    desc:'호랑이 같은 여자와 토끼 같은 남자 진짜로 관심 있습니다',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'두근두근, 설레는, 박력 넘치는'},
+  '웁니까?': {type:'시리즈', age:'19', len:'1분 50초', tags:'긴장감 넘치는 • 액션 • 로맨스', year:'2022',
+    desc:'남자는 비에 젖었을 때 가장 아름답다',
+    cast:'이규형, 정려원', genre:'한국 드라마, 로맨스', mood:'긴장감 넘치는, 액션, 박력 넘치는, 설레는'},
   '변론을 시작하겠습니다': {type:'시리즈', age:'17', len:'1분 3초', tags:'긴장감 넘치는 • 긴박한 • 드라마틱한', year:'2022',
     desc:'수갑 차고 끌려가는 남자콤 유발자',
     cast:'이규형, 정려원', genre:'드라마', mood:'긴장감 넘치는, 긴박한, 드라마틱한'},
