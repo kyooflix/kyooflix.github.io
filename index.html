@@ -66,7 +66,8 @@ nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(-
 .btn.play{background:var(--ink);color:var(--bg)}
 .btn.more{background:rgba(255,255,255,.18);backdrop-filter:blur(6px)}
 .rate{position:absolute;right:0;bottom:clamp(40px,8vh,90px);z-index:1;display:flex;align-items:center;gap:12px}.mute{width:44px;height:44px;border-radius:50%;border:1px solid #ffffff66;background:transparent}.age{background:#ffffff1f;border-left:3px solid var(--ink);padding:6px 28px 6px 10px;font-size:14px}
-.jj{padding:10px 16px}.jj.on{background:var(--rose);color:var(--bg)}
+.jj{padding:10px 16px}.btn#lk2.on{color:var(--rose)}
+.jj.on{background:#f2c14e26;color:var(--rose);box-shadow:inset 0 0 0 1.5px var(--rose)}
 .eps{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid #ffffff1a}.eps li{display:grid;grid-template-columns:28px 120px 1fr;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #ffffff1a;cursor:pointer}.eps .no{font-size:22px;color:var(--soft);text-align:center}.eps .th{aspect-ratio:16/9;border-radius:4px}.eps b{display:block;font-size:15px}.eps small{color:var(--soft)}
 @media(max-width:600px){.eps li{grid-template-columns:22px 90px 1fr}}
 #who{position:fixed;inset:0;z-index:45;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px}
@@ -151,7 +152,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 #pop .ic{display:flex;gap:8px;align-items:center;margin-bottom:10px}
 #pop .ic button{width:38px;height:38px;border-radius:50%;border:1.5px solid #ffffff66;background:transparent;display:grid;place-items:center;font-size:15px;padding:0}
 #pop .ic .pl{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-#pop .ic .lk.on{border-color:var(--rose);color:var(--rose)}
+#pop .ic .lk.on,#pop .ic .jj.on{border-color:var(--rose);color:var(--rose);background:transparent;box-shadow:none}
 #pop .ic .mo{margin-left:auto}
 #pop .mt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--soft)}
 #pop .mt .ag{border:1px solid #ffffff55;padding:0 5px;border-radius:3px;font-size:12px}
@@ -607,7 +608,7 @@ function openSheet(id){
         <div class="row2">
           <button class="btn play" id="sp">${v.ext?'▶ 유튜브에서 보기':'▶ 재생'}</button>
           <button class="btn more jj ${jjim.has(v.id)?'on':''}" data-id="${v.id}" aria-label="찜하기">${jjim.has(v.id)?'✓':'＋'}</button>
-          <button class="btn more" id="lk2" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
+          <button class="btn more ${liked.has(v.id)?'on':''}" id="lk2" aria-label="좋아요">${liked.has(v.id)?'♥':'♡'}</button>
           ${media?`<button class="snd" id="snd" aria-label="소리 켜기">🔇</button>`:''}
         </div></div>
     </div>
@@ -629,7 +630,7 @@ function openSheet(id){
   }
   const hv = $('heroVid'); if(hv) hv.pause();
   $('x').onclick = closeSheet; $('sp').onclick = ()=>{ stopCover(); play(id); }; $('x').focus();
-  $('lk2').onclick = ()=>{ liked.has(id)?liked.delete(id):liked.add(id); $('lk2').textContent = liked.has(id)?'♥':'♡'; };
+  $('lk2').onclick = ()=>{ liked.has(id)?liked.delete(id):liked.add(id); $('lk2').textContent = liked.has(id)?'♥':'♡'; $('lk2').classList.toggle('on',liked.has(id)); };
   if($('snd')) $('snd').onclick = ()=>{
     const c = $('cv'); if(!c) return;
     let muted;
