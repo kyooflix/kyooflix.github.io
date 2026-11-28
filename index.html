@@ -37,6 +37,11 @@ header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:c
 header.solid{background:rgba(11,10,12,.97)}
 .brand{font:400 34px/1 "Bebas Neue",sans-serif;letter-spacing:.02em;color:var(--rose);flex:none}.brand span{color:var(--ink)}
 nav{display:flex;gap:18px;font-size:14px;color:var(--soft);overflow-x:auto;scrollbar-width:none}
+nav .sm{display:none}@media(max-width:600px){nav .lg{display:none}nav .sm{display:inline}}
+.jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;padding:6px max(4vw,16px) 12px}
+.jgrid .card{width:auto}
+.jempty{padding:8px max(4vw,16px);color:var(--soft);line-height:1.7}
+body.jv .hero{display:none}body.jv .rows{margin-top:0;padding-top:96px}
 nav a{color:inherit;text-decoration:none;white-space:nowrap}nav a.on{color:var(--ink);font-weight:700}
 .swap{margin-left:auto;display:flex;align-items:center;gap:6px;padding:0;border:0;background:none;color:#f2c14e;cursor:pointer;flex:none}
 .swap .me{animation:swpulse 2s ease-out 1.2s 4}
@@ -159,7 +164,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 @media (hover:none){#pop{display:none!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
 @media (max-width:600px){header{gap:14px}.hero{min-height:420px}.arrow{display:none}
-  nav{display:none}
+  nav{gap:12px;font-size:13px}
   .hero .info{padding-bottom:4px}
   .rate{top:70px;bottom:auto;right:0}
   .profs{display:grid;grid-template-columns:repeat(2,auto);justify-content:center;gap:22px 28px}
@@ -183,7 +188,7 @@ footer{padding:20px max(4vw,16px) 40px;color:var(--soft);font-size:13px}
 
 <header id="top">
   <div class="brand">KYOO<span>FLIX</span></div>
-  <nav><a class="on" href="#">홈</a><a href="#">시리즈</a><a href="#">필모그래피</a><a href="#">비하인드</a><a href="#">내가 찜한 영상</a></nav>
+  <nav><a class="on" href="#" id="navHome">홈</a><a href="#" id="navJjim"><span class="lg">내가 찜한 영상</span><span class="sm">찜 목록</span></a></nav>
   <button class="swap" aria-label="프로필 바꾸기"><span class="me"></span><svg class="chev" viewBox="0 0 24 24" width="22" height="22"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </header>
 
@@ -488,7 +493,22 @@ const find = id => ALL().find(v=>v.id===id);
 ALL().forEach(v=>Object.assign(v, INFO[v.title]||{}));
 const art = (v, poster) => `background:${v.thumb?`url('${v.thumb}') center/${v.yt&&poster?(v.crop?'auto 152%':'auto 134%'):(v.crop?'116% auto':'cover')} no-repeat,`:''}radial-gradient(circle at 75% 25%,hsl(${v.hue} 80% 70% / .55),transparent 45%),linear-gradient(135deg,hsl(${v.hue} 45% 28%),hsl(${(v.hue+40)%360} 40% 12%))`;
 const $ = id => document.getElementById(id);
+const JKEY='kyooflix-jjim';
 const jjim = new Set();
+let VIEW = 'home';
+function saveJjim(){ try{ localStorage.setItem(JKEY, JSON.stringify([...jjim].map(id=>find(id)?.title).filter(Boolean))); }catch(e){} }
+function loadJjim(){ try{ const t=JSON.parse(localStorage.getItem(JKEY)||'[]'); ALL().forEach(v=>{ if(t.includes(v.title)) jjim.add(v.id); }); }catch(e){} }
+function toggleJjim(id){
+  jjim.has(id)?jjim.delete(id):jjim.add(id); saveJjim();
+  document.querySelectorAll(`.jj[data-id="${id}"]`).forEach(x=>{x.classList.toggle('on',jjim.has(id)); x.textContent=jjim.has(id)?'✓':'＋';});
+  if(VIEW==='jjim') renderRows();
+}
+function setView(v){
+  VIEW=v; document.body.classList.toggle('jv', v==='jjim');
+  $('navHome').classList.toggle('on', v==='home'); $('navJjim').classList.toggle('on', v==='jjim');
+  const hv=$('heroVid'); if(hv){ v==='jjim'?hv.pause():hv.play().catch(()=>{}); }
+  renderRows(); scrollTo(0,0);
+}
 const rowOf = v => rowsNow().find(r=>!r.top && !r.progress && r.items.includes(v));
 const eps = v => { const r = rowOf(v); if(!r) return ''; return `<h4 style="margin:22px 0 0">${r.name}</h4><ul class="eps">${r.items.map((e,i)=>`<li data-play="${e.id}"><span class="no">${i+1}</span><span class="th" style="${art(e)}"></span><span><b>${e.title}</b><small>${[e.len,e.desc].filter(Boolean).join(' · ')||e.ep}</small></span></li>`).join('')}</ul>`; };
 const SPR = {
@@ -502,7 +522,7 @@ const sprite = m => `<svg viewBox="0 0 ${m[0].length} ${m.length}" width="72%" h
 document.querySelectorAll('.prof i[data-s]').forEach(i=>{ i.innerHTML = sprite(SPR[i.dataset.s]); });
 document.querySelectorAll('.prof').forEach(b=>b.addEventListener('click',()=>{
   const me=document.querySelector('.me'); me.style.background=b.dataset.c; me.innerHTML=b.querySelector('i').innerHTML;
-  PROFILE = b.querySelector('i').dataset.s; renderRows(); scrollTo(0,0);
+  PROFILE = b.querySelector('i').dataset.s; setView('home');
   const hv=$('heroVid'); if(hv){ try{ hv.currentTime=0; }catch(e){} hv.play().catch(()=>{}); }
   $('who').classList.add('hidden');
 }));
@@ -510,6 +530,13 @@ document.querySelector('.swap').addEventListener('click',()=>{ $('who').style.an
 
 function renderRows(){
   try{ hidePop(); }catch(e){}
+if(VIEW==='jjim'){
+  const seen=new Set(), list=ALL().filter(v=>jjim.has(v.id) && !seen.has(v.title) && seen.add(v.title));
+  $('rows').innerHTML = `<section class="row"><h2>내가 찜한 영상</h2>${list.length
+    ? `<div class="jgrid">${list.map(v=>`<button class="card" data-id="${v.id}" style="${art(v)}">${v.ext?'<span class="ytb">YouTube ↗</span>':''}<span class="t">${v.title}</span></button>`).join('')}</div>`
+    : `<p class="jempty">아직 찜한 영상이 없어요.<br>마음에 드는 영상의 <b>＋</b> 버튼을 눌러 담아보세요!</p>`}</section>`;
+  return;
+}
 $('rows').innerHTML = rowsNow().map((r,ri)=>`
   <section class="row ${r.top?'top':''}">
     <h2>${r.name}</h2>
@@ -522,11 +549,15 @@ $('rows').innerHTML = rowsNow().map((r,ri)=>`
     </div>
   </section>`).join('');
 }
+loadJjim();
+document.querySelectorAll('.jj').forEach(x=>{ const on=jjim.has(x.dataset.id); x.classList.toggle('on',on); x.textContent=on?'✓':'＋'; });
 renderRows();
+$('navHome').onclick=e=>{e.preventDefault(); setView('home');};
+$('navJjim').onclick=e=>{e.preventDefault(); setView('jjim');};
 
 document.addEventListener('click', e=>{
   const j = e.target.closest('.jj');
-  if(j){ const id=j.dataset.id; jjim.has(id)?jjim.delete(id):jjim.add(id); document.querySelectorAll(`.jj[data-id="${id}"]`).forEach(b=>{b.classList.toggle('on',jjim.has(id)); b.textContent=jjim.has(id)?'✓':'＋';}); return; }
+  if(j){ toggleJjim(j.dataset.id); return; }
   const ep = e.target.closest('[data-play]'); if(ep){ play(ep.dataset.play); return; }
   const a = e.target.closest('.arrow');
   if(a){ const t=$('t'+a.dataset.r); t.scrollBy({left:a.dataset.d*t.clientWidth*.85,behavior:'smooth'}); return; }
@@ -712,7 +743,7 @@ pop.addEventListener('click', e=>{
   if(b.dataset.a==='play'){ hidePop(); const pv = find(id); if(pv.ext) openYT(pv); else play(id); }
   else if(b.dataset.a==='more'){ hidePop(); openSheet(id); }
   else if(b.dataset.a==='like'){ liked.has(id)?liked.delete(id):liked.add(id); b.classList.toggle('on',liked.has(id)); b.textContent=liked.has(id)?'♥':'♡'; }
-  else if(b.classList.contains('jj')){ jjim.has(id)?jjim.delete(id):jjim.add(id); document.querySelectorAll(`.jj[data-id="${id}"]`).forEach(x=>{x.classList.toggle('on',jjim.has(id)); x.textContent=jjim.has(id)?'✓':'＋';}); }
+  else if(b.classList.contains('jj')){ toggleJjim(id); }
 });
 addEventListener('scroll', hidePop, {passive:true});
 document.querySelectorAll('.track').forEach(t=>t.addEventListener('scroll', hidePop, {passive:true}));
